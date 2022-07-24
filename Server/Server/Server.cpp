@@ -1,14 +1,16 @@
 // Server.cpp : Defines the entry point for the console application.
 //
-
 #include "stdafx.h"
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <iostream>
+#include <string>
 #include "process.h"
 #include "communication.h"
 #include "shared_type.h"
 #include "handle_request_function.h"
+#include "define_variable.h"
+
 using namespace std;
 #pragma comment(lib, "Ws2_32.lib")
 
@@ -19,7 +21,9 @@ using namespace std;
 char rcv_buff[100];
 char payload_buff[BUFF_SIZE];
 char header_buff[BUFF_SIZE];
-char send_buff[BUFF_SIZE];
+char send_buff_for_user[BUFF_SIZE];
+char send_buff_for_other_user[BUFF_SIZE];
+
 vector<User> users;
 vector<Room> rooms;
 /*
@@ -77,7 +81,19 @@ void buy_now_handler();
 * @param client_socket(SOCKET): contain socket of request user
 * @no return
 */
-void create_room_handler();
+void create_room_handler(char user_name[], SOCKET client);
+
+/*
+* @function create_room_handler: create and run new timer thread, create new room in rooms list
+* @param user_id(string): user id
+* @param item_name(string): name of the item
+* @param item_description(string): description of the item
+* @param starting_price(int): starting price of the item
+* @param buy_immediately_price(int): price that user can buy immediately
+* @param client_socket(SOCKET): contain socket of request user
+* @no return
+*/
+void sell_item_handler(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, SOCKET client, int room_id);
 
 /*
 * @thread timer_thread: time count and notify the owner when the time is over
@@ -90,7 +106,6 @@ unsigned __stdcall timer_thread(void *param);
 unsigned __stdcall worker_thread(void *param);
 int main(int argc, char* argv[])
 {
-
 	//Initiate WinSock
 	WSADATA wsaData;
 	WORD wVersion = MAKEWORD(2, 2);
@@ -213,6 +228,7 @@ unsigned __stdcall worker_thread(void *param) {
 				}
 			}
 			else {
+				printf("Accept incoming connection from client\n");
 				socks[nEvents] = connSock;
 				events[nEvents] = WSACreateEvent();
 				WSAEventSelect(socks[nEvents], events[nEvents], FD_READ | FD_CLOSE);
@@ -230,12 +246,17 @@ unsigned __stdcall worker_thread(void *param) {
 
 		if (sockEvent.lNetworkEvents & FD_READ) {
 			//Receive message from client
+			cout << "Read event" << endl;
 			if (sockEvent.iErrorCode[FD_READ_BIT] != 0) {
 				printf("FD_READ failed with error %d\n", sockEvent.iErrorCode[FD_READ_BIT]);
 			}
 
-			ret = recv(socks[index], rcv_buff, 5, MSG_WAITALL);
+			ret = recv(socks[index], rcv_buff, 5, 0);
+			cout << rcv_buff << " " << ret << endl;
 
+			if (ret == SOCKET_ERROR) {
+				printf("Error %d", WSAGetLastError());
+			}
 			//Release socket and event if an error occurs
 			if (ret <= 0) {
 				closesocket(socks[index]);
@@ -248,9 +269,8 @@ unsigned __stdcall worker_thread(void *param) {
 			}
 			else {
 				rcv_buff[ret] = 0;
-				byte_stream_receiver(socks[index], payload_buff, header_buff, MSG_WAITALL);
-				handle_request((int)header_buff[0], payload_buff, socks[index]);
-
+				byte_stream_receiver(socks[index], payload_buff, rcv_buff, 0);
+				handle_request((int)rcv_buff[0], payload_buff, socks[index]);
 				//reset event
 				WSAResetEvent(events[index]);
 			}
@@ -276,20 +296,29 @@ unsigned __stdcall worker_thread(void *param) {
 
 }
 void log_in_handler(char payload_buff[], SOCKET s) {
-	int send_bytes = login(payload_buff, s, rooms, send_buff);
-	Send(s, send_buff, send_bytes, 0);
+	int send_bytes = login(payload_buff, s, rooms, send_buff_for_user);
+	Send(s, send_buff_for_user, send_bytes, 0);
 }
 
-void create_room_handler() {
-
+void create_room_handler(char user_name[], SOCKET client) {
+	int send_bytes = create_room(user_name, client, rooms, send_buff_for_user, send_buff_for_other_user);
+	int ret1 = Send(client, send_buff_for_user, 6, 0);
+	// send request for other user in system 
+	for (int i = 0; i < users.size(); i++) {
+		int ret2 = Send(users[i].socket, send_buff_for_other_user, 6, 0);
+	}
 };
 
 void join_room_handler() {
 
 };
 
-void sell_item_handler() {
-
+void sell_item_handler(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, SOCKET client, int room_id) {
+	int send_bytes = sell_item(item_name, item_description, owner_id, start_price, buy_now_price, rooms, room_id, send_buff_for_user);
+	int ret = Send(client, send_buff_for_user, 6, 0);
+	if (ret == SOCKET_ERROR) {
+		printf("Error %d", WSAGetLastError());
+	}
 };
 
 void bid_handler() {
@@ -303,23 +332,26 @@ void buy_now_handler() {
 
 
 void handle_request(int opcode, char* payloadBuff, SOCKET client_socket) {
-	string method;
-	if (opcode == 10) {
+	cout << "opcode " << opcode << endl;
+	if (opcode == LOGIN) {
 		log_in_handler(payloadBuff, client_socket);
 	}
-	else if (method == "CREATEROOM") {
-		create_room_handler();
+	else if (opcode == CREATEROOM) {
+		char user_name[100];
+		cout <<"user name: "<< string(payloadBuff);
+		memcpy(user_name, payloadBuff, 100);
+		create_room_handler(user_name, client_socket);
 	}
-	else if (method == "JOINROOM") {
+	else if (opcode == JOINROOM) {
 		join_room_handler();
 	}
-	else if (method == "SELLITEM") {
-		sell_item_handler();
+	else if (opcode == SELLITEM) {
+		sell_item_handler("name", "des", 1, 100, 200, client_socket, 1);
 	}
-	else if (method == "BIDITEM") {
+	else if (opcode == BIDITEM) {
 		bid_handler();
 	}
-	else if (method == "BUYNOW") {
+	else if (opcode == BUYNOW) {
 		buy_now_handler();
 	}
 }
