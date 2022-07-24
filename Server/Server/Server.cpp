@@ -295,7 +295,7 @@ unsigned __stdcall worker_thread(void *param) {
 	return 0;
 
 }
-void log_in_handler(char payload_buff[], SOCKET s) {
+void login_handler(char payload_buff[], SOCKET s) {
 	int send_bytes = login(payload_buff, s, rooms,users, send_buff_for_user);
 	Send(s, send_buff_for_user, send_bytes, 0);
 }
@@ -312,9 +312,9 @@ void create_room_handler(char user_name[], SOCKET client) {
 	}
 };
 
-void join_room_handler() {
+void join_room_handler(char payload_buff[],SOCKET s) {
 	int current_user_count;
-	int room_id = payloadBuff[0];
+	int room_id = payload_buff[0];
 	int send_bytes = join_room(payload_buff, s, rooms, users, send_buff_for_user,current_user_count);
 	Send(s, send_buff_for_user, send_bytes, 0);
 

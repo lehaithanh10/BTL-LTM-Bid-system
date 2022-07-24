@@ -1,9 +1,4 @@
-﻿  Server.cpp
-c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(310): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-  Compiling...
-  handle_request_function.cpp
-c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\handle_request_function.cpp(63): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-  Server.vcxproj -> C:\Users\MY LAPTOP\OneDrive\Desktop\BK\Network_Programming\FinalNewVer2\Server\Debug\Server.exe
-  Server.vcxproj -> C:\Users\MY LAPTOP\OneDrive\Desktop\BK\Network_Programming\FinalNewVer2\Server\Debug\Server.pdb (Full PDB)
+﻿  handle_request_function.cpp
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(73): warning C4018: '<': signed/unsigned mismatch
+  Server.vcxproj -> F:\20212\Network programing\Code\BTL_LTM\BTL-LTM-Bid-system\Server\Debug\Server.exe
+  Server.vcxproj -> F:\20212\Network programing\Code\BTL_LTM\BTL-LTM-Bid-system\Server\Debug\Server.pdb (Full PDB)

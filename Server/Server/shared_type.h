@@ -7,9 +7,9 @@
 using namespace std;
 
 struct User {
-	string user_id;
+	int user_id;
 	SOCKET socket;
-	string joined_room_id = "-1";
+	int joined_room_id = -1;
 	string name;
 };
 
@@ -26,8 +26,8 @@ struct Room {
 	int room_id;
 	string hosterName;
 	vector<User> user_list;
-	vector<Item> itemList;
-	Item currentItem;
-	string currentHighestBidUserId;
+	vector<Item> item_list;
+	Item current_item;
+	int current_highest_bid_user_id;
 };
 
