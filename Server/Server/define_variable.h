@@ -33,9 +33,9 @@
 #define LOGIN 110
 #define CREATEROOM 120
 #define JOINROOM 130
-#define SELLITEM 150
-#define BIDITEM 160
-#define BUYNOW 170	
+#define SELLITEM 140
+#define BIDITEM 150
+#define BUYNOW 160	
 
 // common variable
 #define BUFF_SIZE 2048
