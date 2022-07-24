@@ -1,4 +1,5 @@
 ﻿  handle_request_function.cpp
+<<<<<<< HEAD
 c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\handle_request_function.cpp(13): error C2451: conditional expression of type 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' is illegal
   c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\handle_request_function.cpp(13): note: No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
 c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\handle_request_function.cpp(27): error C2065: 'users': undeclared identifier
@@ -120,3 +121,8 @@ c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\s
   Server.cpp
 c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(310): warning C4018: '<': signed/unsigned mismatch
   Generating Code...
+=======
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(73): warning C4018: '<': signed/unsigned mismatch
+  Server.vcxproj -> F:\20212\Network programing\Code\BTL_LTM\BTL-LTM-Bid-system\Server\Debug\Server.exe
+  Server.vcxproj -> F:\20212\Network programing\Code\BTL_LTM\BTL-LTM-Bid-system\Server\Debug\Server.pdb (Full PDB)
+>>>>>>> 9c7c906b7cd14fb340beb2292c0609f06a774ec0

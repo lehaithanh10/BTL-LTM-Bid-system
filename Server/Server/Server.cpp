@@ -295,8 +295,13 @@ unsigned __stdcall worker_thread(void *param) {
 	return 0;
 
 }
+<<<<<<< HEAD
 void log_in_handler(char payload_buff[], SOCKET s) {
 	int send_bytes = login(payload_buff, s, rooms, users, send_buff_for_user);
+=======
+void login_handler(char payload_buff[], SOCKET s) {
+	int send_bytes = login(payload_buff, s, rooms,users, send_buff_for_user);
+>>>>>>> 9c7c906b7cd14fb340beb2292c0609f06a774ec0
 	Send(s, send_buff_for_user, send_bytes, 0);
 }
 
@@ -312,11 +317,19 @@ void create_room_handler(char user_name[], SOCKET client) {
 	}
 };
 
+<<<<<<< HEAD
 void join_room_handler(char payload_buff[], SOCKET client) {
 	int current_user_count;
 	int room_id = payload_buff[0];
 	int send_bytes = join_room(payload_buff, client, rooms, users, send_buff_for_user, current_user_count);
 	Send(client, send_buff_for_user, send_bytes, 0);
+=======
+void join_room_handler(char payload_buff[],SOCKET s) {
+	int current_user_count;
+	int room_id = payload_buff[0];
+	int send_bytes = join_room(payload_buff, s, rooms, users, send_buff_for_user,current_user_count);
+	Send(s, send_buff_for_user, send_bytes, 0);
+>>>>>>> 9c7c906b7cd14fb340beb2292c0609f06a774ec0
 
 	//send update information to other client
 	send_buff_for_other_user[0] = NOTI_SUCCESS_JOIN_ROOM;
