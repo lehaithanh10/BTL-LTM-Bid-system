@@ -1,6 +1,6 @@
-﻿  handle_request_function.cpp
-  Server.cpp
-  Generating Code...
-c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\handle_request_function.cpp(45): warning C4172: returning address of local variable or temporary: response
+﻿  Server.cpp
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\define_variable.h(19): warning C4005: 'NOTI_SUCCESS_JOIN_ROOM': macro redefinition
+  c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\define_variable.h(18): note: see previous definition of 'NOTI_SUCCESS_JOIN_ROOM'
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(307): warning C4018: '<': signed/unsigned mismatch
   Server.vcxproj -> C:\Users\MY LAPTOP\OneDrive\Desktop\BK\Network_Programming\FinalNewVer2\Server\Debug\Server.exe
   Server.vcxproj -> C:\Users\MY LAPTOP\OneDrive\Desktop\BK\Network_Programming\FinalNewVer2\Server\Debug\Server.pdb (Full PDB)

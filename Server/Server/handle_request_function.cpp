@@ -20,7 +20,7 @@ int login(char payload_buff[], SOCKET s, vector<Room> rooms, char send_buff[]) {
 		send_buff[i] = (int)tmp % 256;
 		tmp = tmp / 256;
 	}
-	send_buff[0] = 10;
+	send_buff[0] = SUCCESS_LOGIN;
 	for (unsigned int i = 0; i < rooms.size(); i++) {
 		send_buff[i + 5] = rooms[i].room_id;
 	}
@@ -28,26 +28,47 @@ int login(char payload_buff[], SOCKET s, vector<Room> rooms, char send_buff[]) {
 };
 
 
-char* create_room(string user_id, string use_name, SOCKET client, vector<Room> list_room) {
-	char response[BUFF_SIZE];
+int create_room(char user_name[], SOCKET client, vector<Room> list_room, char send_buff_for_user[], char send_buff_for_other_user[]) {
 	Room new_room;
 	User room_hoster;
+	string name(user_name);
 	room_hoster.joined_room_id = 1;
-	room_hoster.user_id = user_id;
+	room_hoster.user_id = client;
 	room_hoster.socket = client;
-	room_hoster.name = use_name;
+	room_hoster.name = user_name;
 	new_room.room_id = list_room.size();
 	new_room.user_list.push_back(room_hoster);
-	new_room.hoster_id = user_id;
+	new_room.hosterName = user_name;
 	list_room.push_back(new_room);
-	response[5] = new_room.room_id;
-	memcpy(response, SUCCESS_CREATE_ROOM + "0001", HEADER_LENGTH);
-	return response;
+	int code_for_user = SUCCESS_CREATE_ROOM;
+	int length = 1;
+	memcpy(send_buff_for_user, &code_for_user, 1);
+	memcpy(send_buff_for_user + 1, &length, 4);
+	memcpy(send_buff_for_user + 5, &new_room.room_id, 1);
+
+	int code_for_other_user = NOTI_SUCCESS_CREATE_ROOM;
+	memcpy(send_buff_for_other_user, &code_for_other_user, 1);
+	memcpy(send_buff_for_other_user + 1, &length, 4);
+	memcpy(send_buff_for_other_user + 5, &new_room.room_id, 1);
+	return 5;
 }
 
-string sell_item() {
-	string res;
-	return res;
+int sell_item(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, vector<Room> list_room, int room_id, char send_buff[]) {
+	Item new_item;
+	new_item.name = item_name;
+	new_item.description = item_description;
+	new_item.owner_id = owner_id;
+	new_item.start_price = start_price;
+	new_item.buy_now_price = buy_now_price;
+	for (int i = 0; i < list_room.size(); i++) {
+		if (list_room[i].room_id == room_id) {
+			list_room[i].itemList.push_back(new_item);
+		}
+	}
+
+	send_buff[0] = SUCCESS_SELL_ITEM;
+
+	return 1;
 }
 
 string join_room() {

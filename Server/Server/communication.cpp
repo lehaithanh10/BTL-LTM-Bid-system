@@ -13,8 +13,6 @@
 
 using namespace std;
 
-
-
 int findPayloadLen(char in[]) {
 	int j; int res = 0;
 	for (j = 1; j <= 4; j++) {
@@ -26,10 +24,11 @@ int findPayloadLen(char in[]) {
 }
 
 void byte_stream_receiver(SOCKET s, char *payloadBuff, char* headerBuff, int flags) {
-
-	int payloadLen = findPayloadLen(headerBuff);
-	if (payloadLen > 0)
+	//cout << "headerBuff: " << headerBuff << endl ;
+	int payloadLen = *(int*)(headerBuff+1);
+	if (payloadLen > 0) {
 		int ret = Receive(s, payloadBuff, payloadLen, flags);
+	}
 	else
 		memset(payloadBuff, 0, BUFF_SIZE);
 }

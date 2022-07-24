@@ -57,7 +57,7 @@ string buy_now();
 * @param room(vector<Room>*): created room list
 * @return response code (defined in status_code.h)
 */
-string sell_item();
+int sell_item(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, vector<Room> list_room, int room_id, char send_buff[]);
 
 
 /*
@@ -71,4 +71,4 @@ string sell_item();
 * @param id_count(int*): room of previous created room id, use to auto generate room id
 * @return response code (defined in status_code.h)
 */
-string create_room();
+int create_room(char use_name[], SOCKET client, vector<Room> list_room, char send_buff_for_user[], char send_buff_for_other_user[]);

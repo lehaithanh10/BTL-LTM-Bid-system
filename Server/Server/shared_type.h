@@ -17,14 +17,14 @@ struct Item {
 	int start_price;
 	int buy_now_price;
 	int current_price;
-	string owner_id;
+	int owner_id;
 	string description;
 	string name;
 };
 
 struct Room {
 	int room_id;
-	string hoster_id;
+	string hosterName;
 	vector<User> user_list;
 	vector<Item> itemList;
 	Item currentItem;
