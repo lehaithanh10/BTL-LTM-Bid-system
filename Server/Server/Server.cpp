@@ -32,7 +32,7 @@ vector<Room> rooms;
 * @param client_socket(SOCKET): contain socket of request user
 * @no return
 */
-void handle_request(int, char*, SOCKET client_socket);
+void handle_request(unsigned char, char*, SOCKET client_socket);
 
 /*
 * @function log_in_handler: verify user email and password based on account.txt
@@ -81,7 +81,7 @@ void buy_now_handler();
 * @param client_socket(SOCKET): contain socket of request user
 * @no return
 */
-void create_room_handler(char user_name[], SOCKET client);
+void create_room_handler(SOCKET client);
 
 /*
 * @function create_room_handler: create and run new timer thread, create new room in rooms list
@@ -270,7 +270,7 @@ unsigned __stdcall worker_thread(void *param) {
 			else {
 				rcv_buff[ret] = 0;
 				byte_stream_receiver(socks[index], payload_buff, rcv_buff, 0);
-				handle_request((int)rcv_buff[0], payload_buff, socks[index]);
+				handle_request((unsigned char)rcv_buff[0], payload_buff, socks[index]);
 				//reset event
 				WSAResetEvent(events[index]);
 			}
@@ -295,41 +295,32 @@ unsigned __stdcall worker_thread(void *param) {
 	return 0;
 
 }
-<<<<<<< HEAD
-void log_in_handler(char payload_buff[], SOCKET s) {
-	int send_bytes = login(payload_buff, s, rooms, users, send_buff_for_user);
-=======
 void login_handler(char payload_buff[], SOCKET s) {
-	int send_bytes = login(payload_buff, s, rooms,users, send_buff_for_user);
->>>>>>> 9c7c906b7cd14fb340beb2292c0609f06a774ec0
+	int send_bytes = login(payload_buff, s, rooms, users, send_buff_for_user);
+	cout << "count user " << users.size();
 	Send(s, send_buff_for_user, send_bytes, 0);
 }
 
-void create_room_handler(char user_name[], SOCKET client) {
-	int send_bytes = create_room(user_name, client, rooms, send_buff_for_user, send_buff_for_other_user);
-	for (int i = 0; i < 6; i++) {
-		cout << i << " " << (int)send_buff_for_user[i] << " ";
-	}
+void create_room_handler(SOCKET client) {
+	int send_bytes = create_room(client, users, rooms, send_buff_for_user, send_buff_for_other_user);
+	cout << "count room " << rooms.size();
+
+	// send response for user
 	int ret1 = Send(client, send_buff_for_user, 6, 0);
-	// send request for other user in system 
+	// send update for other user in system 
 	for (int i = 0; i < users.size(); i++) {
-		int ret2 = Send(users[i].socket, send_buff_for_other_user, 6, 0);
+		if (users[i].joined_room_id != -1) {
+			int ret2 = Send(users[i].socket, send_buff_for_other_user, 6, 0);
+		}
 	}
 };
 
-<<<<<<< HEAD
-void join_room_handler(char payload_buff[], SOCKET client) {
+
+void join_room_handler(char payload_buff[], SOCKET s) {
 	int current_user_count;
 	int room_id = payload_buff[0];
-	int send_bytes = join_room(payload_buff, client, rooms, users, send_buff_for_user, current_user_count);
-	Send(client, send_buff_for_user, send_bytes, 0);
-=======
-void join_room_handler(char payload_buff[],SOCKET s) {
-	int current_user_count;
-	int room_id = payload_buff[0];
-	int send_bytes = join_room(payload_buff, s, rooms, users, send_buff_for_user,current_user_count);
+	int send_bytes = join_room(payload_buff, s, rooms, users, send_buff_for_user, current_user_count);
 	Send(s, send_buff_for_user, send_bytes, 0);
->>>>>>> 9c7c906b7cd14fb340beb2292c0609f06a774ec0
 
 	//send update information to other client
 	send_buff_for_other_user[0] = NOTI_SUCCESS_JOIN_ROOM;
@@ -337,18 +328,28 @@ void join_room_handler(char payload_buff[],SOCKET s) {
 	memcpy(send_buff_for_other_user + 1, &length, 4);
 	memcpy(send_buff_for_other_user + 5, &current_user_count, 4);
 	for (auto &u : users) {
-		if (u.joined_room_id != -1 && u.joined_room_id == room_id && u.socket != client) {
+		if (u.joined_room_id != -1 && u.joined_room_id == room_id && u.socket != s) {
 			Send(u.socket, send_buff_for_other_user, 9, 0);
 		}
 	}
 };
 
 void sell_item_handler(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, SOCKET client, int room_id) {
-	int send_bytes = sell_item(item_name, item_description, owner_id, start_price, buy_now_price, rooms, room_id, send_buff_for_user);
+	int send_bytes = sell_item(item_name, item_description, owner_id, start_price, buy_now_price, rooms, room_id, send_buff_for_user, send_buff_for_other_user);
 	int ret = Send(client, send_buff_for_user, 6, 0);
 	if (ret == SOCKET_ERROR) {
 		printf("Error %d", WSAGetLastError());
 	}
+
+	Room currentRoom;
+	for (auto r : rooms) {
+		if (r.room_id == room_id) {
+			currentRoom = r;
+		}
+	}
+
+	cout <<"room id: "<< room_id <<  " count item in room: " << currentRoom.item_list.size();
+
 };
 
 void bid_handler() {
@@ -361,24 +362,27 @@ void buy_now_handler() {
 
 
 
-void handle_request(int opcode, char* payloadBuff, SOCKET client_socket) {
-	cout << "opcode " << opcode << endl;
+void handle_request(unsigned char opcode, char* payloadBuff, SOCKET client_socket) {
+	cout << "opcode " << (long)opcode << endl;
 	if (opcode == LOGIN) {
 		login_handler(payload_buff, client_socket);
 	}
 	else if (opcode == CREATEROOM) {
-		char user_name[100];
-		cout << "user name: " << string(payloadBuff);
-		memcpy(user_name, payloadBuff, 100);
-		create_room_handler(user_name, client_socket);
+		create_room_handler(client_socket);
 	}
 	if (opcode == JOINROOM) {
 		join_room_handler(payload_buff, client_socket);
-
-
 	}
 	else if (opcode == SELLITEM) {
-		sell_item_handler("name", "des", 1, 100, 200, client_socket, 1);
+		int room_id = payloadBuff[0];
+		int owner_id = client_socket;
+		char item_name[100];
+		memcpy(item_name, payloadBuff + 3, 100);
+		int start_price = *(int*)(payloadBuff + 103);
+		int buy_now_price = *(int*)(payloadBuff + 107);
+		char item_description[100];
+		memcpy(item_name, payloadBuff + 111, 100);
+		sell_item_handler(string(item_name), string(item_description), owner_id, start_price, buy_now_price, client_socket, room_id);
 	}
 	else if (opcode == BIDITEM) {
 		bid_handler();
