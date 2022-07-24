@@ -13,7 +13,7 @@ using namespace std;
 
 * @return response code (defined in status_code.h)
 */
-int login(char[], SOCKET, vector<Room>, char[]);
+int login(char[], SOCKET, vector<Room>,vector<User>&, char[]);
 
 /*
 * @function show_room: display all created room
@@ -30,7 +30,7 @@ string view_room();
 * @param user(vector<User>*): connected user list
 * @return response code (defined in status_code.h)
 */
-string join_room();
+int join_room(char[], SOCKET, vector<Room>&, vector<User>&, char[],int&);
 
 /*
 * @function bid: reset timer thread and update new price, or refuse if information is invalid

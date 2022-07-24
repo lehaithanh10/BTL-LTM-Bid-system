@@ -41,7 +41,7 @@ void handle_request(int, char*, SOCKET client_socket);
 * @param client_socket(SOCKET): contain socket of request user
 * @no return
 */
-void log_in_handler(char*);
+void login_handler(char[],SOCKET);
 
 
 /*
@@ -51,7 +51,7 @@ void log_in_handler(char*);
 * @param client_socket(SOCKET): contain socket of request user
 * @no return
 */
-void join_room_handler();
+void join_room_handler(char[], SOCKET);
 
 /*
 * @function bid_handler: update a new bid price, reset timer thread
@@ -296,7 +296,7 @@ unsigned __stdcall worker_thread(void *param) {
 
 }
 void log_in_handler(char payload_buff[], SOCKET s) {
-	int send_bytes = login(payload_buff, s, rooms, send_buff_for_user);
+	int send_bytes = login(payload_buff, s, rooms,users, send_buff_for_user);
 	Send(s, send_buff_for_user, send_bytes, 0);
 }
 
@@ -310,7 +310,21 @@ void create_room_handler(char user_name[], SOCKET client) {
 };
 
 void join_room_handler() {
+	int current_user_count;
+	int room_id = payloadBuff[0];
+	int send_bytes = join_room(payload_buff, s, rooms, users, send_buff_for_user,current_user_count);
+	Send(s, send_buff_for_user, send_bytes, 0);
 
+	//send update information to other client
+	send_buff_for_other_user[0] = NOTI_SUCCESS_JOIN_ROOM;
+	int length = 1;
+	memcpy(send_buff_for_other_user+1, &length, 4);
+	memcpy(send_buff_for_other_user + 5, &current_user_count, 4);
+	for (auto &u : users) {
+		if (u.joined_room_id != -1 && u.joined_room_id == room_id && u.socket != s) {
+			Send(u.socket, send_buff_for_other_user, 9, 0);
+		}
+	}
 };
 
 void sell_item_handler(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, SOCKET client, int room_id) {
@@ -334,7 +348,7 @@ void buy_now_handler() {
 void handle_request(int opcode, char* payloadBuff, SOCKET client_socket) {
 	cout << "opcode " << opcode << endl;
 	if (opcode == LOGIN) {
-		log_in_handler(payloadBuff, client_socket);
+		login_handler(payload_buff, client_socket);
 	}
 	else if (opcode == CREATEROOM) {
 		char user_name[100];
@@ -342,8 +356,10 @@ void handle_request(int opcode, char* payloadBuff, SOCKET client_socket) {
 		memcpy(user_name, payloadBuff, 100);
 		create_room_handler(user_name, client_socket);
 	}
-	else if (opcode == JOINROOM) {
-		join_room_handler();
+	if (opcode == JOINROOM) {
+		join_room_handler(payload_buff,client_socket);
+
+	
 	}
 	else if (opcode == SELLITEM) {
 		sell_item_handler("name", "des", 1, 100, 200, client_socket, 1);
