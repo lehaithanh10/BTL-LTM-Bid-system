@@ -60,7 +60,7 @@ void join_room_handler(char[], SOCKET);
 * @param client_socket(SOCKET): contain socket of request user
 * @no return
 */
-void bid_handler();
+void bid_handler(char[],SOCKET);
 
 /*
 * @function buy_immediately_handler: set new owner of the item, and timer thread immediately
@@ -69,7 +69,7 @@ void bid_handler();
 * @param client_socket(SOCKET): contain socket of request user
 * @no return
 */
-void buy_now_handler();
+void buy_now_handler(char[],SOCKET);
 
 /*
 * @function create_room_handler: create and run new timer thread, create new room in rooms list
@@ -352,12 +352,44 @@ void sell_item_handler(string item_name, string item_description, int owner_id, 
 
 };
 
-void bid_handler() {
+void bid_handler(char payload_buff[],SOCKET s) {
+	int tmp;
+	char user_name[102];
+	int current_price;
+	int room_id = payload_buff[0];
+	int send_bytes = bid(payload_buff,s,rooms,users,send_buff_for_user,user_name,current_price);
+	Send(s, send_buff_for_user, send_bytes, 0);
+	//send to other user
+	send_buff_for_other_user[0] = NOTI_SUCCESS_BID_ITEM;
+	int length = 104;
+	memcpy(send_buff_for_other_user + 1, &length, 4);
+	memcpy(send_buff_for_other_user + 5, user_name, 100);
+	memcpy(send_buff_for_other_user + 105, &current_price, 4);
+	for (auto &u : users) {
+		if (u.joined_room_id != -1 && u.joined_room_id == room_id && u.socket != s) {
+			Send(u.socket, send_buff_for_other_user, 109, 0);
+		}
+	}
 
 };
 
-void buy_now_handler() {
-
+void buy_now_handler(char payload_buff[], SOCKET s) {
+	int tmp;
+	char user_name[102];
+	int current_price;
+	int room_id = payload_buff[0];
+	int send_bytes = buy_now(payload_buff, s, rooms, users, send_buff_for_user, user_name);
+	Send(s, send_buff_for_user, send_bytes, 0);
+	//send to other user
+	send_buff_for_other_user[0] = NOTI_SUCCESS_BID_ITEM;
+	int length = 104;
+	memcpy(send_buff_for_other_user + 1, &length, 4);
+	memcpy(send_buff_for_other_user + 5, user_name, 100);
+	for (auto &u : users) {
+		if (u.joined_room_id != -1 && u.joined_room_id == room_id && u.socket != s) {
+			Send(u.socket, send_buff_for_other_user, 109, 0);
+		}
+	}
 };
 
 
@@ -370,6 +402,12 @@ void handle_request(unsigned char opcode, char* payloadBuff, SOCKET client_socke
 	else if (opcode == CREATEROOM) {
 		create_room_handler(client_socket);
 	}
+
+	else if (opcode == JOINROOM) {
+		join_room_handler(payload_buff, client_socket);
+	}
+	
+
 	if (opcode == JOINROOM) {
 		join_room_handler(payload_buff, client_socket);
 	}
@@ -385,9 +423,9 @@ void handle_request(unsigned char opcode, char* payloadBuff, SOCKET client_socke
 		sell_item_handler(string(item_name), string(item_description), owner_id, start_price, buy_now_price, client_socket, room_id);
 	}
 	else if (opcode == BIDITEM) {
-		bid_handler();
+		bid_handler(payload_buff,client_socket);
 	}
 	else if (opcode == BUYNOW) {
-		buy_now_handler();
+		buy_now_handler(payloadBuff,client_socket);
 	}
 }
