@@ -9,14 +9,14 @@
 
 using namespace std;
 User* find_user_by_id(int id, vector<User> users) {
-	for (auto &u : users) {
+	for (struct User &u : users) {
 		if (u.user_id = id) {
 			return &u;
 		}
 	}
 	return NULL;
 }
-int login(char payload_buff[], SOCKET s, vector<Room> rooms, char send_buff[]) {
+int login(char payload_buff[], SOCKET s, vector<Room> rooms,vector<User> &users, char send_buff[]) {
 	struct User u ;
 	string name(payload_buff);
 	u.name = name;
@@ -32,7 +32,7 @@ int login(char payload_buff[], SOCKET s, vector<Room> rooms, char send_buff[]) {
 	memcpy(send_buff + 1, &payload_len, 4);
 	if (payload_len == 0) return 5;
 	for (unsigned int i = 0; i < rooms.size(); i++) {
-		send_buff[i + 5] = rooms[i].roomId;
+		send_buff[i + 5] = rooms[i].room_id;
 	}
 	return payload_len + 5;
 };
@@ -72,7 +72,7 @@ int sell_item(string item_name, string item_description, int owner_id, int start
 	new_item.buy_now_price = buy_now_price;
 	for (int i = 0; i < list_room.size(); i++) {
 		if (list_room[i].room_id == room_id) {
-			list_room[i].itemList.push_back(new_item);
+			list_room[i].item_list.push_back(new_item);
 		}
 	}
 
@@ -81,49 +81,49 @@ int sell_item(string item_name, string item_description, int owner_id, int start
 	return 1;
 }
 
-string join_room() {
+int join_room(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[],int& current_user_count) {
 	int room_id = payload_buff[0];
 	for (auto &u : rooms) {
-		if (room_id == u.roomId) {
+		if (room_id == u.room_id) {
 			for (auto &v : users) {
 				if (v.socket == s) {
-					u.userList.push_back(v);
+					u.user_list.push_back(v);
 					v.joined_room_id = room_id;
-					current_user_count = u.userList.size();
+					current_user_count = u.user_list.size();
 					send_buff[0] = SUCCESS_JOIN_ROOM;
 					//if dont have any item on rooms
-					if (u.itemList.size() == 0) {
+					if (u.item_list.size() == 0) {
 						memset(send_buff, 0, sizeof(send_buff));
 						send_buff[0] = SUCCESS_JOIN_ROOM;//opcode
 						int payload_len = 320;
 						memcpy(send_buff + 1, &payload_len, 4);//length
 						memcpy(send_buff+5, v.name.c_str(), 100);//userName
-						int userQuantity = u.userList.size();
+						int userQuantity = u.user_list.size();
 						memcpy(send_buff + 105,&userQuantity, 4);//userQuantity
 						return payload_len + 5;
 					}
 					//append send_buff
-					int payload_len = 320 + u.currentItem.description.size();
+					int payload_len = 320 + u.current_item.description.size();
 					//append header
 					send_buff[0] = SUCCESS_JOIN_ROOM;
 					memcpy(send_buff + 1, &payload_len, 4);
 					//append payload
 					memcpy(send_buff+5, v.name.c_str(), 100);//userHostName
-					int userQuantity = u.userList.size();
-					memcpy(send_buff + 105, &userQuantity, 4);//userQuantity
-					int itemQuantity = u.itemList.size();
-					memcpy(send_buff + 109, &itemQuantity, 4);//itemQuantity
-					User* highestBid = find_user_by_id(u.currentHighestBidUserId, users);
-					if(highestBid != NULL)
-						memcpy(send_buff + 113,highestBid->name.c_str(), 100);//currentHighestBidName
-					memcpy(send_buff + 213, u.currentItem.name.c_str(), 100);//currentItemName
-					int currentPrice = u.currentItem.currentPrice;
+					int user_quantity = u.user_list.size();
+					memcpy(send_buff + 105, &user_quantity, 4);//userQuantity
+					int item_quantity = u.item_list.size();
+					memcpy(send_buff + 109, &item_quantity, 4);//itemQuantity
+					User* highest_bid = find_user_by_id(u.current_highest_bid_user_id, users);
+					if(highest_bid != NULL)
+						memcpy(send_buff + 113,highest_bid->name.c_str(), 100);//currentHighestBidName
+					memcpy(send_buff + 213, u.current_item.name.c_str(), 100);//currentItemName
+					int currentPrice = u.current_item.current_price;
 					memcpy(send_buff + 313, &currentPrice, 4);//currentPrice
-					int startPrice = u.currentItem.startPrice;
+					int startPrice = u.current_item.start_price;
 					memcpy(send_buff + 317, &startPrice, 4);//startPrice
-					int buyNowPrice = u.currentItem.buyNowPrice;
+					int buyNowPrice = u.current_item.buy_now_price;
 					memcpy(send_buff + 321, &buyNowPrice, 4);//buyNowPrice
-					memcpy(send_buff + 325, u.currentItem.description.c_str(), u.currentItem.description.size());//Description
+					memcpy(send_buff + 325, u.current_item.description.c_str(), u.current_item.description.size());//Description
 					return payload_len + 5;
 
 				}
