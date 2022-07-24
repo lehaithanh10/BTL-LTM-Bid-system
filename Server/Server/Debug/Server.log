@@ -1,4 +1,6 @@
 ﻿  handle_request_function.cpp
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(73): warning C4018: '<': signed/unsigned mismatch
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(81): warning C4018: '<': signed/unsigned mismatch
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(145): warning C4101: 'res': unreferenced local variable
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(186): warning C4101: 'res': unreferenced local variable
   Server.vcxproj -> F:\20212\Network programing\Code\BTL_LTM\BTL-LTM-Bid-system\Server\Debug\Server.exe
   Server.vcxproj -> F:\20212\Network programing\Code\BTL_LTM\BTL-LTM-Bid-system\Server\Debug\Server.pdb (Full PDB)

@@ -39,7 +39,7 @@ int join_room(char[], SOCKET, vector<Room>&, vector<User>&, char[],int&);
 * @param room(vector<Room>*): created room list
 * @return response code (defined in status_code.h)
 */
-string bid();
+int bid(char[], SOCKET, vector<Room>&, vector<User>&, char[],char[], int&);
 
 /*
 * @function buy_immediately: end timer thread immediately and update new owner, or refuse if information is invalid
@@ -48,7 +48,7 @@ string bid();
 * @param room(vector<Room>*): created room list
 * @return response code (defined in status_code.h)
 */
-string buy_now();
+int buy_now(char[], SOCKET, vector<Room>&, vector<User>&, char[], char[]);
 
 /*
 * @function buy_immediately: end timer thread immediately and update new owner, or refuse if information is invalid
