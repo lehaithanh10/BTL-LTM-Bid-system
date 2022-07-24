@@ -32,7 +32,7 @@ int login(char payload_buff[], SOCKET s, vector<Room> rooms, char send_buff[]) {
 	memcpy(send_buff + 1, &payload_len, 4);
 	if (payload_len == 0) return 5;
 	for (unsigned int i = 0; i < rooms.size(); i++) {
-		send_buff[i + 5] = rooms[i].roomId;
+		send_buff[i + 5] = rooms[i].room_id;
 	}
 	return payload_len + 5;
 };

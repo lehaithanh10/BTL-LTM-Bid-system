@@ -9,7 +9,7 @@ using namespace std;
 struct User {
 	string user_id;
 	SOCKET socket;
-	string joined_room_id = "-1";
+	int joined_room_id = -1;
 	string name;
 };
 
