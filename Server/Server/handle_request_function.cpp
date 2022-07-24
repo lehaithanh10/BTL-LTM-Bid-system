@@ -16,7 +16,7 @@ User* find_user_by_id(int id, vector<User> users) {
 	}
 	return NULL;
 }
-<<<<<<< HEAD
+
 Room* find_room_by_id(int id, vector<Room> rooms) {
 	for (auto &u : rooms) {
 		if (u.room_id == id)
@@ -24,12 +24,11 @@ Room* find_room_by_id(int id, vector<Room> rooms) {
 	}
 	return NULL;
 }
-int login(char payload_buff[], SOCKET s, vector<Room> rooms,vector<User> &users, char send_buff[]) {
-	struct User u ;
-=======
+
+
 int login(char payload_buff[], SOCKET s, vector<Room> rooms, vector<User> &users, char send_buff[]) {
 	struct User u;
->>>>>>> 783630cb18ee46ca1bd1597c47a9083605c9984e
+
 	string name(payload_buff);
 	u.name = name;
 	u.user_id = s;
@@ -123,25 +122,24 @@ int join_room(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& 
 					send_buff[0] = SUCCESS_JOIN_ROOM;
 					memcpy(send_buff + 1, &payload_len, 4);
 					//append payload
-<<<<<<< HEAD
+
 					memcpy(send_buff+5, v.name.c_str(), v.name.size());//userHostName
-=======
+
 					memcpy(send_buff + 5, v.name.c_str(), 100);//userHostName
->>>>>>> 783630cb18ee46ca1bd1597c47a9083605c9984e
+
 					int user_quantity = u.user_list.size();
 					memcpy(send_buff + 105, &user_quantity, 4);//userQuantity
 					int item_quantity = u.item_list.size();
 					memcpy(send_buff + 109, &item_quantity, 4);//itemQuantity
 					User* highest_bid = find_user_by_id(u.current_highest_bid_user_id, users);
-<<<<<<< HEAD
+
 					if(highest_bid != NULL)
 						memcpy(send_buff + 113,highest_bid->name.c_str(), highest_bid->name.size());//currentHighestBidName
 					memcpy(send_buff + 213, u.current_item.name.c_str(), u.current_item.name.size());//currentItemName
-=======
+
 					if (highest_bid != NULL)
 						memcpy(send_buff + 113, highest_bid->name.c_str(), 100);//currentHighestBidName
 					memcpy(send_buff + 213, u.current_item.name.c_str(), 100);//currentItemName
->>>>>>> 783630cb18ee46ca1bd1597c47a9083605c9984e
 					int currentPrice = u.current_item.current_price;
 					memcpy(send_buff + 313, &currentPrice, 4);//currentPrice
 					int startPrice = u.current_item.start_price;

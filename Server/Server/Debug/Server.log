@@ -1,13 +1,7 @@
-<<<<<<< HEAD
-﻿  handle_request_function.cpp
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(81): warning C4018: '<': signed/unsigned mismatch
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(145): warning C4101: 'res': unreferenced local variable
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(186): warning C4101: 'res': unreferenced local variable
+﻿  Server.cpp
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(311): warning C4018: '<': signed/unsigned mismatch
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(356): warning C4101: 'tmp': unreferenced local variable
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(377): warning C4101: 'tmp': unreferenced local variable
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(379): warning C4101: 'current_price': unreferenced local variable
   Server.vcxproj -> F:\20212\Network programing\Code\BTL_LTM\BTL-LTM-Bid-system\Server\Debug\Server.exe
   Server.vcxproj -> F:\20212\Network programing\Code\BTL_LTM\BTL-LTM-Bid-system\Server\Debug\Server.pdb (Full PDB)
-=======
-﻿  Server.cpp
-c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(311): warning C4018: '<': signed/unsigned mismatch
-  Server.vcxproj -> C:\Users\MY LAPTOP\OneDrive\Desktop\BK\Network_Programming\FinalNewVer2\Server\Debug\Server.exe
-  Server.vcxproj -> C:\Users\MY LAPTOP\OneDrive\Desktop\BK\Network_Programming\FinalNewVer2\Server\Debug\Server.pdb (Full PDB)
->>>>>>> 783630cb18ee46ca1bd1597c47a9083605c9984e

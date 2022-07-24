@@ -402,15 +402,14 @@ void handle_request(unsigned char opcode, char* payloadBuff, SOCKET client_socke
 	else if (opcode == CREATEROOM) {
 		create_room_handler(client_socket);
 	}
-<<<<<<< HEAD
-	else if (opcode == JOINROOM) {
-		join_room_handler(payload_buff,client_socket);
 
+	else if (opcode == JOINROOM) {
+		join_room_handler(payload_buff, client_socket);
+	}
 	
-=======
+
 	if (opcode == JOINROOM) {
 		join_room_handler(payload_buff, client_socket);
->>>>>>> 783630cb18ee46ca1bd1597c47a9083605c9984e
 	}
 	else if (opcode == SELLITEM) {
 		int room_id = payloadBuff[0];
