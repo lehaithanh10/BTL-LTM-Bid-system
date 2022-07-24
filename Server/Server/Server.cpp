@@ -302,6 +302,9 @@ void log_in_handler(char payload_buff[], SOCKET s) {
 
 void create_room_handler(char user_name[], SOCKET client) {
 	int send_bytes = create_room(user_name, client, rooms, send_buff_for_user, send_buff_for_other_user);
+	for (int i = 0; i < 6; i++) {
+		cout << i <<" "<< (int)send_buff_for_user[i]<<" ";
+	}
 	int ret1 = Send(client, send_buff_for_user, 6, 0);
 	// send request for other user in system 
 	for (int i = 0; i < users.size(); i++) {
