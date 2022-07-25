@@ -56,12 +56,14 @@ int Send(SOCKET s, char *buff, int size, int flags) {
 	return n;
 }
 
-void send_time_notification(int room_id, char buff[], vector<Room> *rooms) {
+void send_time_notification(int room_id, char buff[], vector<Room> *rooms, int response_length) {
 	for (int i = 0; i < (*rooms).size(); i++) {
 		if ((*rooms)[i].room_id == room_id) {
 			vector<User> participants = (*rooms)[i].user_list;
-			for (int j = 0; j < participants.size(); j++)
-				Send(participants[j].socket, buff, 100, 0);
+			for (int j = 0; j < participants.size(); j++) {
+				cout << "send notification here" << endl;
+				Send(participants[j].socket, buff, response_length, 0);
+			}
 		}
 	}
 }
