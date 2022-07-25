@@ -1,2 +1,12 @@
-﻿  Server.vcxproj -> C:\Users\MY LAPTOP\OneDrive\Desktop\BK\Network_Programming\FinalNewVer2\Server\Debug\Server.exe
-  Server.vcxproj -> C:\Users\MY LAPTOP\OneDrive\Desktop\BK\Network_Programming\FinalNewVer2\Server\Debug\Server.pdb (Full PDB)
+﻿  Server.cpp
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\define_variable.h(34): warning C4005: 'SOMETHING_WRONG_WHEN_BUYNOW': macro redefinition
+  c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\define_variable.h(33): note: see previous definition of 'SOMETHING_WRONG_WHEN_BUYNOW'
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(322): warning C4018: '<': signed/unsigned mismatch
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(342): warning C4018: '<': signed/unsigned mismatch
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(353): warning C4018: '<': signed/unsigned mismatch
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(396): warning C4018: '<': signed/unsigned mismatch
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(407): warning C4101: 'tmp': unreferenced local variable
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(433): warning C4101: 'tmp': unreferenced local variable
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(435): warning C4101: 'current_price': unreferenced local variable
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(455): warning C4018: '<': signed/unsigned mismatch
+LINK : fatal error LNK1168: cannot open C:\Users\MY LAPTOP\OneDrive\Desktop\BK\Network_Programming\FinalNewVer2\Server\Debug\Server.exe for writing
