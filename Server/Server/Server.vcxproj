@@ -155,6 +155,7 @@
   <ItemGroup>
     <ClCompile Include="communication.cpp" />
     <ClCompile Include="handle_request_function.cpp" />
+    <ClCompile Include="helpers.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -378,9 +378,7 @@ void join_room_handler(char payload_buff[], SOCKET s) {
 };
 
 void sell_item_handler(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, SOCKET client, int room_id) {
-
 	int send_bytes = sell_item(item_name, item_description, owner_id, start_price, buy_now_price, rooms, users, room_id, send_buff_for_user, send_buff_for_other_user);
-
 	//hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void *)room_id, 0, 0); //start time thread
 	//rooms[room_id].timer_thread = hthread;
 	int ret = Send(client, send_buff_for_user, 5, 0);

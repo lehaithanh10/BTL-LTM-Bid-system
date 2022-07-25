@@ -83,7 +83,7 @@ int sell_item(string item_name, string item_description, int owner_id, int start
 		if (list_room[i].room_id == room_id){
 			if (list_room[i].item_list.size() == 0) {
 				list_room[i].current_item = new_item;
-				update_current_item(send_buff_for_other_user, item_name.c_str(), start_price, buy_now_price, item_description.c_str(), users, room_id);
+				update_current_item (send_buff_for_other_user, item_name.c_str(), start_price, buy_now_price, item_description.c_str(), users, room_id);
 			}
 			list_room[i].item_list.push_back(new_item);
 			item_quantity = list_room[i].item_list.size();
@@ -95,7 +95,6 @@ int sell_item(string item_name, string item_description, int owner_id, int start
 	int length_for_user = 0;
 	memcpy(send_buff_for_user, &code_for_user, 1);
 	memcpy(send_buff_for_other_user + 1, &length_for_user, 4);
-
 	int length_for_other = 4;
 	int code_for_other_user = NOTI_SUCCESS_SELL_ITEM;
 	memcpy(send_buff_for_other_user, &code_for_other_user, 1);
