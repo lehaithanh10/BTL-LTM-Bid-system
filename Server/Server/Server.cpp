@@ -411,9 +411,9 @@ void bid_handler(char payload_buff[], SOCKET s) {
 	int send_bytes = bid(payload_buff, s, rooms, users, send_buff_for_user, user_name, send_buff_for_other_user, current_price);
 	Send(s, send_buff_for_user, send_bytes, 0);
 	//if (send_buff_for_user[0] == SUCCESS_BID_ITEM) {
-		//TerminateThread(rooms[room_id].timer_thread, 0);
-		//hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void *)room_id, 0, 0); //start thread
-		//rooms[room_id].timer_thread = hthread;
+	//TerminateThread(rooms[room_id].timer_thread, 0);
+	//hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void *)room_id, 0, 0); //start thread
+	//rooms[room_id].timer_thread = hthread;
 	//}
 
 	//send to other user
