@@ -53,11 +53,9 @@ int create_room(SOCKET client, vector<User> &list_user, vector<Room> &list_room,
 		if (list_user[i].user_id == client) {
 			list_user[i].joined_room_id = list_room.size();
 			new_room.user_list.push_back(list_user[i]);
-			new_room.hosterName = list_user[i].name;
+			new_room.hoster_name = list_user[i].name;
 		}
 	}
-	cout << new_room.user_list.size() << endl;
-	cout << new_room.hosterName << endl;
 	new_room.room_id = list_room.size();
 	list_room.push_back(new_room);
 	int code_for_user = SUCCESS_CREATE_ROOM;
@@ -82,16 +80,13 @@ int sell_item(string item_name, string item_description, int owner_id, int start
 	new_item.buy_now_price = buy_now_price;
 	int item_quantity;
 	for (int i = 0; i < list_room.size(); i++) {
-		if (list_room[i].room_id == room_id) {
-			 
-				if (list_room[i].item_list.size() == 0) {
-					list_room[i].current_item = new_item;
-					update_current_item(send_buff_for_other_user, item_name.c_str(), start_price, buy_now_price, item_description.c_str(), users, room_id);
-
-				}
-				list_room[i].item_list.push_back(new_item);
-				item_quantity = list_room[i].item_list.size();
+		if (list_room[i].item_list.size() == 0) {
+			list_room[i].current_item = new_item;
+			update_current_item(send_buff_for_other_user, item_name.c_str(), start_price, buy_now_price, item_description.c_str(), users, room_id);
 		}
+		list_room[i].item_list.push_back(new_item);
+		item_quantity = list_room[i].item_list.size();
+		
 	}
 
 	int code_for_user = SUCCESS_SELL_ITEM;
@@ -108,59 +103,60 @@ int sell_item(string item_name, string item_description, int owner_id, int start
 }
 
 int join_room(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[], int& current_user_count) {
-	int room_id = (unsigned char)payload_buff[0];
-	for (auto &u : rooms) {
-		if (room_id == u.room_id) {
-			for (auto &v : users) {
-				if (v.socket == s) {
-					v.joined_room_id = room_id;
-					u.user_list.push_back(v);
 
-					current_user_count = u.user_list.size();
+	int room_id = (unsigned char)payload_buff[0];
+	for (auto &room : rooms) {
+		if (room_id == room.room_id) {
+			for (auto &user : users) {
+				if (user.socket == s) {
+					user.joined_room_id = room_id;
+					room.user_list.push_back(user);
+					current_user_count = room.user_list.size();
 					send_buff[0] = SUCCESS_JOIN_ROOM;
 					//if dont have any item on rooms
-					if (u.item_list.size() == 0) {
+					if (room.item_list.size() == 0) {
 						memset(send_buff, 0, sizeof(send_buff));
 						send_buff[0] = SUCCESS_JOIN_ROOM;//opcode
 						int payload_len = 320;
 						memcpy(send_buff + 1, &payload_len, 4);//length
-						memcpy(send_buff + 5, v.name.c_str(), 100);//userName
-						int userQuantity = u.user_list.size();
+						memcpy(send_buff + 5, user.name.c_str(), 100);//userName
+						int userQuantity = room.user_list.size();
 						memcpy(send_buff + 105, &userQuantity, 4);//userQuantity
 						return payload_len + HEADER_LENGTH;
 					}
 					//append send_buff
-					int payload_len = 320 + u.current_item.description.size();
+					int payload_len = 320 + room.current_item.description.size();
 					//append header
 					send_buff[0] = SUCCESS_JOIN_ROOM;
 					memcpy(send_buff + 1, &payload_len, 4);
 					//append payload
 
-					memcpy(send_buff + 5, v.name.c_str(), v.name.size());//userHostName
+					memcpy(send_buff + 5, user.name.c_str(), user.name.size());//userHostName
 
-					memcpy(send_buff + 5, v.name.c_str(), 100);//userHostName
+					memcpy(send_buff + 5, user.name.c_str(), 100);//userHostName
 
-					int user_quantity = u.user_list.size();
+					int user_quantity = room.user_list.size();
 					memcpy(send_buff + 105, &user_quantity, 4);//userQuantity
-					int item_quantity = u.item_list.size();
+					int item_quantity = room.item_list.size();
 					memcpy(send_buff + 109, &item_quantity, 4);//itemQuantity
 					for (auto &highest_user : users) {
-						if (highest_user.user_id == u.current_highest_bid_user_id) {
+						if (highest_user.user_id == room.current_highest_bid_user_id) {
 							memcpy(send_buff + 113, highest_user.name.c_str(), 100);//currentHighestBidName
 						}
 					}
 
+					memcpy(send_buff + 213, room.current_item.name.c_str(), 100);//currentItemName
+					int currentPrice = room.current_item.current_price;
 
-
-					memcpy(send_buff + 213, u.current_item.name.c_str(), 100);//currentItemName
-					int currentPrice = u.current_item.current_price;
 					memcpy(send_buff + 313, &currentPrice, 4);//currentPrice
-					int startPrice = u.current_item.start_price;
+					int startPrice = room.current_item.start_price;
 					memcpy(send_buff + 317, &startPrice, 4);//startPrice
-					int buyNowPrice = u.current_item.buy_now_price;
+					int buyNowPrice = room.current_item.buy_now_price;
 					memcpy(send_buff + 321, &buyNowPrice, 4);//buyNowPrice
-					memcpy(send_buff + 325, u.current_item.description.c_str(), u.current_item.description.size());//Description
+					memcpy(send_buff + 325, room.current_item.description.c_str(), room.current_item.description.size());//Description
 					return payload_len + HEADER_LENGTH;
+
+
 
 				}
 			}
@@ -276,11 +272,12 @@ void leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &use
 		if (rooms[i].room_id == room_id) {
 			for (int j = 0; j < rooms[i].user_list.size(); j++) {
 				if ((rooms[i].user_list)[j].user_id == user_id) {
-					((rooms)[i].user_list).erase(((rooms)[i].user_list).begin() + j);
+					cout << "user_id: " << user_id << endl;
+					(rooms)[i].user_list.erase(((rooms)[i].user_list).begin() + j);
 					int user_quantity = (rooms)[i].user_list.size();
-					cout << "Left user in room: " << (rooms)[i].user_list.size() << endl;
+					cout << "Left user in room: " << user_quantity << endl;
 					send_buff_for_user[0] = SUCCESS_LEAVE_ROOM;
-					send_buff_for_other_user[0] = NOTI_SUCCESS_LEAVE_ROOM;
+					send_buff_for_other_user[0] = NOTI_UPDATE_USER_QUANTITY;
 					int length_for_user = 0;
 					int length_for_other = 4;
 					memcpy(send_buff_for_user + 1, &length_for_user, 4);
