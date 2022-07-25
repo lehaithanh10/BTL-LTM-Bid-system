@@ -405,10 +405,8 @@ void sell_item_handler(string item_name, string item_description, int owner_id, 
 
 void bid_handler(char payload_buff[], SOCKET s) {
 	int tmp;
-	char user_name[102];
-	int current_price;
-	int room_id = payload_buff[0];
-	int send_bytes = bid(payload_buff, s, rooms, users, send_buff_for_user, user_name, send_buff_for_other_user, current_price);
+	int room_id = (unsigned char)payload_buff[0];
+	int send_bytes = bid(payload_buff, s, rooms, users, send_buff_for_user, send_buff_for_other_user);
 	Send(s, send_buff_for_user, send_bytes, 0);
 	//if (send_buff_for_user[0] == SUCCESS_BID_ITEM) {
 		//TerminateThread(rooms[room_id].timer_thread, 0);
@@ -417,24 +415,13 @@ void bid_handler(char payload_buff[], SOCKET s) {
 	//}
 
 	//send to other user
-	send_buff_for_other_user[0] = NOTI_SUCCESS_BID_ITEM;
-	int length = 104;
-	memcpy(send_buff_for_other_user + 1, &length, 4);
-	memcpy(send_buff_for_other_user + 5, user_name, 100);
-	memcpy(send_buff_for_other_user + 105, &current_price, 4);
-	for (auto &u : users) {
-		if (u.joined_room_id != -1 && u.joined_room_id == room_id && u.socket != s) {
-			Send(u.socket, send_buff_for_other_user, 109, 0);
-		}
-	}
 };
 
 void buy_now_handler(char payload_buff[], SOCKET s) {
 	int tmp;
-	char user_name[102];
 	int current_price;
-	int room_id = payload_buff[0];
-	int send_bytes = buy_now(payload_buff, s, rooms, users, send_buff_for_user, send_buff_for_other_user, user_name);
+	int room_id =(unsigned char) payload_buff[0];
+	int send_bytes = buy_now(payload_buff, s, rooms, users, send_buff_for_user, send_buff_for_other_user);
 	Send(s, send_buff_for_user, send_bytes, 0);
 };
 

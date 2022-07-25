@@ -95,7 +95,7 @@ int sell_item(string item_name, string item_description, int owner_id, int start
 	int code_for_user = SUCCESS_SELL_ITEM;
 	int length_for_user = 0;
 	memcpy(send_buff_for_user, &code_for_user, 1);
-	memcpy(send_buff_for_other_user + 1, &length_for_user, 4);
+	memcpy(send_buff_for_user + 1, &length_for_user, 4);
 	int length_for_other = 4;
 	int code_for_other_user = NOTI_SUCCESS_SELL_ITEM;
 	memcpy(send_buff_for_other_user, &code_for_other_user, 1);
@@ -164,7 +164,7 @@ int join_room(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& 
 	return 5;
 }
 
-int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[],char send_buff_for_other_user[], char user_name[], int& current_price) {
+int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[],char send_buff_for_other_user[]) {
 	int res;
 	int room_id = *(unsigned char*)(payload_buff);
 	int price = *(int*)(payload_buff + 1);
@@ -185,9 +185,8 @@ int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users,
 						return HEADER_LENGTH;
 					}
 					r.current_highest_bid_user_id = s;
-					
-					memcpy(user_name, u.name.c_str(), u.name.size());
-					current_price = price;
+
+
 					send_buff[0] = SUCCESS_BID_ITEM;
 					int length = 0;
 					memcpy(send_buff + 1, &length, 4);
@@ -195,8 +194,8 @@ int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users,
 					send_buff_for_other_user[0] = NOTI_SUCCESS_BID_ITEM;
 					int length_for_other_user = 104;
 					memcpy(send_buff_for_other_user + 1, &length_for_other_user, 4);
-					memcpy(send_buff_for_other_user + 5, user_name, 100);
-					memcpy(send_buff_for_other_user + 105, &current_price, 4);
+					memcpy(send_buff_for_other_user + 5, u.name.c_str(), 100);
+					memcpy(send_buff_for_other_user + 105, &price, 4);
 					for (auto &u : users) {
 						if (u.joined_room_id == room_id && u.socket != s) {
 							Send(u.socket, send_buff_for_other_user, 109, 0);
@@ -216,7 +215,7 @@ int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users,
 	return HEADER_LENGTH;
 }
 
-int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[],char send_buff_for_other_user[], char user_name[]) {
+int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[],char send_buff_for_other_user[]) {
 	int res;
 	int room_id = *(unsigned char*)(payload_buff);
 	int price = *(int*)(payload_buff + 1);
@@ -237,7 +236,6 @@ int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& us
 						memcpy(send_buff + 1, &length, 4);
 						return HEADER_LENGTH;
 					}
-					memcpy(user_name, u.name.c_str(), u.name.size());
 					send_buff[0] = SUCCESS_BID_ITEM;
 					int length = 0;
 					memcpy(send_buff + 1, &length, 4);
@@ -245,7 +243,7 @@ int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& us
 					send_buff_for_other_user[0] = NOTI_SUCCESS_BID_ITEM;
 					int length_for_other_user = 100;
 					memcpy(send_buff_for_other_user + 1, &length_for_other_user, 4);
-					memcpy(send_buff_for_other_user + 5, user_name, 100);
+					memcpy(send_buff_for_other_user + 5, u.name.c_str(), 100);
 					for (auto &u : users) {
 						if (u.joined_room_id == room_id && u.socket != s) {
 							Send(u.socket, send_buff_for_other_user, 105, 0);
