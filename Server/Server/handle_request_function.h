@@ -39,7 +39,7 @@ int join_room(char[], SOCKET, vector<Room>&, vector<User>&, char[], int&);
 * @param room(vector<Room>*): created room list
 * @return response code (defined in status_code.h)
 */
-string bid();
+int bid(char[], SOCKET, vector<Room>&, vector<User>&, char[],char[], int&);
 
 /*
 * @function buy_immediately: end timer thread immediately and update new owner, or refuse if information is invalid
@@ -48,7 +48,7 @@ string bid();
 * @param room(vector<Room>*): created room list
 * @return response code (defined in status_code.h)
 */
-string buy_now();
+int buy_now(char[], SOCKET, vector<Room>&, vector<User>&, char[], char[]);
 
 /*
 * @function buy_immediately: end timer thread immediately and update new owner, or refuse if information is invalid
@@ -72,3 +72,16 @@ int sell_item(string item_name, string item_description, int owner_id, int start
 * @return response code (defined in status_code.h)
 */
 int create_room(SOCKET client, vector<User> list_user, vector<Room> &list_room, char send_buff_for_user[], char send_buff_for_other_user[]);
+
+
+/*
+* @function leave_room: delete user from room's client list
+* @param room_id(int): room id
+* @param user_id(int): user id
+* @param room(vector<Room>*): created room list
+* @param user(vector<User>*): connected user list
+* @param send_buff_for_user(char []): response for user send request
+* @param send_buff_for_other_user(char []): response for other user in room
+* @return send byte (int)
+*/
+void leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &users, char send_buff_for_user[], char send_buff_for_other_user[]);

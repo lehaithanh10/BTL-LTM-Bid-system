@@ -2,7 +2,7 @@
 #include <WinSock2.h>
 #include "stdio.h"
 #include "stdafx.h"
-
+#include "shared_type.h"
 #include <WS2tcpip.h>
 #include <iostream>
 #include "vector"
@@ -54,5 +54,15 @@ int Send(SOCKET s, char *buff, int size, int flags) {
 	}
 
 	return n;
+}
+
+void send_time_notification(int room_id, char buff[], vector<Room> *rooms) {
+	for (int i = 0; i < (*rooms).size(); i++) {
+		if ((*rooms)[i].room_id == room_id) {
+			vector<User> participants = (*rooms)[i].user_list;
+			for (int j = 0; j < participants.size(); j++)
+				Send(participants[j].socket, buff , 100, 0);
+		}
+	}
 }
 

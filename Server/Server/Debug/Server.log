@@ -1,4 +1,9 @@
 ﻿  Server.cpp
-c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(311): warning C4018: '<': signed/unsigned mismatch
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(344): warning C4018: '<': signed/unsigned mismatch
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(389): warning C4018: '<': signed/unsigned mismatch
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(400): warning C4101: 'tmp': unreferenced local variable
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(427): warning C4101: 'tmp': unreferenced local variable
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(429): warning C4101: 'current_price': unreferenced local variable
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(457): warning C4018: '<': signed/unsigned mismatch
   Server.vcxproj -> C:\Users\MY LAPTOP\OneDrive\Desktop\BK\Network_Programming\FinalNewVer2\Server\Debug\Server.exe
   Server.vcxproj -> C:\Users\MY LAPTOP\OneDrive\Desktop\BK\Network_Programming\FinalNewVer2\Server\Debug\Server.pdb (Full PDB)
