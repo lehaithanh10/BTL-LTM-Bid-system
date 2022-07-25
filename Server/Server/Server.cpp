@@ -297,7 +297,11 @@ unsigned __stdcall worker_thread(void *param) {
 }
 void login_handler(char payload_buff[], SOCKET s) {
 	int send_bytes = login(payload_buff, s, rooms, users, send_buff_for_user);
-	cout << "count user " << users.size();
+	printf("Sending to user: ");
+	printf("%d ", send_bytes);
+	for (int i = 0; i < send_bytes; i++) {
+		printf("%d ", send_buff_for_user[i]);
+	}
 	Send(s, send_buff_for_user, send_bytes, 0);
 }
 
@@ -306,10 +310,15 @@ void create_room_handler(SOCKET client) {
 	cout << "count room " << rooms.size();
 
 	// send response for user
+	printf("Sending to user: ");
+	printf("%d ", send_bytes);
+	for (int i = 0; i < send_bytes; i++) {
+		printf("%d ", send_buff_for_user[i]);
+	}
 	int ret1 = Send(client, send_buff_for_user, 6, 0);
 	// send update for other user in system 
 	for (int i = 0; i < users.size(); i++) {
-		if (users[i].joined_room_id != -1) {
+		if (users[i].joined_room_id == -1 && users[i].user_id != client) {
 			int ret2 = Send(users[i].socket, send_buff_for_other_user, 6, 0);
 		}
 	}
@@ -382,12 +391,12 @@ void buy_now_handler(char payload_buff[], SOCKET s) {
 	Send(s, send_buff_for_user, send_bytes, 0);
 	//send to other user
 	send_buff_for_other_user[0] = NOTI_SUCCESS_BID_ITEM;
-	int length = 104;
+	int length = 100;
 	memcpy(send_buff_for_other_user + 1, &length, 4);
 	memcpy(send_buff_for_other_user + 5, user_name, 100);
 	for (auto &u : users) {
 		if (u.joined_room_id != -1 && u.joined_room_id == room_id && u.socket != s) {
-			Send(u.socket, send_buff_for_other_user, 109, 0);
+			Send(u.socket, send_buff_for_other_user, 105, 0);
 		}
 	}
 };
@@ -408,7 +417,7 @@ void handle_request(unsigned char opcode, char* payloadBuff, SOCKET client_socke
 	}
 	
 
-	if (opcode == JOINROOM) {
+	else if (opcode == JOINROOM) {
 		join_room_handler(payload_buff, client_socket);
 	}
 	else if (opcode == SELLITEM) {
