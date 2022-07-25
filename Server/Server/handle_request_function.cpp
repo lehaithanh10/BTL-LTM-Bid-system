@@ -104,8 +104,9 @@ int join_room(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& 
 		memcpy(send_buff + 1, &length, 4);
 		return HEADER_LENGTH;
 	}
-	u->user_list.push_back(*v);
 	v->joined_room_id = room_id;
+	u->user_list.push_back(*v);
+
 	current_user_count = u->user_list.size();
 	send_buff[0] = SUCCESS_JOIN_ROOM;
 	//if dont have any item on rooms
