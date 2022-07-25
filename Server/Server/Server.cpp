@@ -336,19 +336,29 @@ void join_room_handler(char payload_buff[], SOCKET s) {
 
 void sell_item_handler(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, SOCKET client, int room_id) {
 	int send_bytes = sell_item(item_name, item_description, owner_id, start_price, buy_now_price, rooms, room_id, send_buff_for_user, send_buff_for_other_user);
-	int ret = Send(client, send_buff_for_user, 6, 0);
+
+	//hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void *)room_id, 0, 0); //start time thread
+	//rooms[room_id].timer_thread = hthread;
+
+	int ret = Send(client, send_buff_for_user, 5, 0);
 	if (ret == SOCKET_ERROR) {
 		printf("Error %d", WSAGetLastError());
 	}
 
-	Room currentRoom;
+	Room current_room;
 	for (auto r : rooms) {
 		if (r.room_id == room_id) {
-			currentRoom = r;
+			current_room = r;
 		}
 	}
 
-	cout << "room id: " << room_id << " count item in room: " << currentRoom.item_list.size();
+	for (int i = 0; i < current_room.user_list.size(); i++) {
+		if (users[i].user_id != owner_id) {
+			int ret2 = Send(current_room.user_list[i].socket, send_buff_for_other_user, 6, 0);
+		}
+	}
+
+	cout << "room id: " << room_id << " count item in room: " << current_room.item_list.size();
 
 };
 
