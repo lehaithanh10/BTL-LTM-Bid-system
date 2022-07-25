@@ -80,12 +80,14 @@ int sell_item(string item_name, string item_description, int owner_id, int start
 	new_item.buy_now_price = buy_now_price;
 	int item_quantity;
 	for (int i = 0; i < list_room.size(); i++) {
-		if (list_room[i].item_list.size() == 0) {
-			list_room[i].current_item = new_item;
-			update_current_item(send_buff_for_other_user, item_name.c_str(), start_price, buy_now_price, item_description.c_str(), users, room_id);
+		if (list_room[i].room_id == room_id){
+			if (list_room[i].item_list.size() == 0) {
+				list_room[i].current_item = new_item;
+				update_current_item(send_buff_for_other_user, item_name.c_str(), start_price, buy_now_price, item_description.c_str(), users, room_id);
+			}
+			list_room[i].item_list.push_back(new_item);
+			item_quantity = list_room[i].item_list.size();
 		}
-		list_room[i].item_list.push_back(new_item);
-		item_quantity = list_room[i].item_list.size();
 		
 	}
 
