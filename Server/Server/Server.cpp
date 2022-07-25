@@ -361,7 +361,7 @@ void join_room_handler(char payload_buff[], SOCKET s) {
 	Send(s, send_buff_for_user, send_bytes, 0);
 
 	//send update information to other client
-	send_buff_for_other_user[0] = NOTI_SUCCESS_JOIN_ROOM;
+	send_buff_for_other_user[0] = NOTI_UPDATE_USER_QUANTITY;
 	int length = 1;
 	memcpy(send_buff_for_other_user + 1, &length, 4);
 	memcpy(send_buff_for_other_user + 5, &current_user_count, 4);
@@ -375,8 +375,8 @@ void join_room_handler(char payload_buff[], SOCKET s) {
 void sell_item_handler(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, SOCKET client, int room_id) {
 	int send_bytes = sell_item(item_name, item_description, owner_id, start_price, buy_now_price, rooms, room_id, send_buff_for_user, send_buff_for_other_user);
 
-	hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void *)room_id, 0, 0); //start time thread
-	rooms[room_id].timer_thread = hthread;
+	//hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void *)room_id, 0, 0); //start time thread
+	//rooms[room_id].timer_thread = hthread;
 
 	int ret = Send(client, send_buff_for_user, 5, 0);
 	if (ret == SOCKET_ERROR) {
@@ -441,7 +441,7 @@ void buy_now_handler(char payload_buff[], SOCKET s) {
 };
 
 void leave_room_handler(char payload_buff[], SOCKET s) {
-	int room_id = payload_buff[0];
+	int room_id = (unsigned char) payload_buff[0];
 	int user_id = s;
 	leave_room(room_id, user_id, rooms, users, send_buff_for_user, send_buff_for_other_user);
 	Send(s, send_buff_for_user, 5, 0);
@@ -468,13 +468,7 @@ void handle_request(unsigned char opcode, char* payload_buff, SOCKET client_sock
 	else if (opcode == CREATEROOM) {
 		create_room_handler(client_socket);
 	}
-
 	else if (opcode == JOINROOM) {
-		join_room_handler(payload_buff, client_socket);
-	}
-
-
-	if (opcode == JOINROOM) {
 		join_room_handler(payload_buff, client_socket);
 	}
 	else if (opcode == SELLITEM) {
@@ -493,5 +487,8 @@ void handle_request(unsigned char opcode, char* payload_buff, SOCKET client_sock
 	}
 	else if (opcode == BUYNOW) {
 		buy_now_handler(payload_buff, client_socket);
+	}
+	else if (opcode == LEAVEROOM) {
+		leave_room_handler(payload_buff, client_socket);
 	}
 }
