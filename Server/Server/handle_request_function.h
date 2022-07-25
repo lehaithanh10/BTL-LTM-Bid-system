@@ -71,7 +71,7 @@ int sell_item(string item_name, string item_description, int owner_id, int start
 * @param id_count(int*): room of previous created room id, use to auto generate room id
 * @return response code (defined in status_code.h)
 */
-int create_room(SOCKET client, vector<User> list_user, vector<Room> &list_room, char send_buff_for_user[], char send_buff_for_other_user[]);
+int create_room(SOCKET client, vector<User> &list_user, vector<Room> &list_room, char send_buff_for_user[], char send_buff_for_other_user[]);
 
 /*
 * @function leave_room: start new timer thread, or refuse if information is invalid
@@ -85,3 +85,16 @@ int create_room(SOCKET client, vector<User> list_user, vector<Room> &list_room, 
 * @return response code (defined in status_code.h)
 */
 void leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &users, char send_buff_for_user[], char send_buff_for_other_user[]);
+
+/*
+* @function send_time_notification: start new timer thread, or refuse if information is invalid
+* @param user_id(string): user id
+* @param item_name(string): name of the item
+* @param item_description(string): description of the item
+* @param starting_price(int): starting price of the item
+* @param buy_immediately_price(int): price that user can buy immediately
+* @param room(vector<Room>*): created room list
+* @param id_count(int*): room of previous created room id, use to auto generate room id
+* @return response code (defined in status_code.h)
+*/
+void send_time_notification(int room_id, char buff[], vector<Room> *rooms);

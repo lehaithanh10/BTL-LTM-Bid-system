@@ -46,11 +46,11 @@ int login(char payload_buff[], SOCKET s, vector<Room> rooms, vector<User> &users
 };
 
 
-int create_room(SOCKET client, vector<User> list_user, vector<Room> &list_room, char send_buff_for_user[], char send_buff_for_other_user[]) {
+int create_room(SOCKET client, vector<User> &list_user, vector<Room> &list_room, char send_buff_for_user[], char send_buff_for_other_user[]) {
 	Room new_room;
 	for (int i = 0; i < list_user.size(); i++) {
 		if (list_user[i].user_id == client) {
-			list_user[i].joined_room_id = -1;
+			list_user[i].joined_room_id = list_room.size();
 			new_room.user_list.push_back(list_user[i]);
 			new_room.hosterName = list_user[i].name;
 		}

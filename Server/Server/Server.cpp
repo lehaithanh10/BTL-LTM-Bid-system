@@ -10,6 +10,7 @@
 #include "shared_type.h"
 #include "handle_request_function.h"
 #include "define_variable.h"
+#include "helpers.h"
 
 using namespace std;
 #pragma comment(lib, "Ws2_32.lib")
@@ -23,6 +24,8 @@ char payload_buff[BUFF_SIZE];
 char header_buff[BUFF_SIZE];
 char send_buff_for_user[BUFF_SIZE];
 char send_buff_for_other_user[BUFF_SIZE];
+char send_buff_for_send_notification[BUFF_SIZE];
+HANDLE hthread;
 
 vector<User> users;
 vector<Room> rooms;
@@ -311,18 +314,45 @@ void login_handler(char payload_buff[], SOCKET s) {
 
 void create_room_handler(SOCKET client) {
 	int send_bytes = create_room(client, users, rooms, send_buff_for_user, send_buff_for_other_user);
-	cout << "count room " << rooms.size();
+	cout << "count room " << rooms.size() << endl;
 
 	// send response for user
 	int ret1 = Send(client, send_buff_for_user, 6, 0);
 	// send update for other user in system 
 	for (int i = 0; i < users.size(); i++) {
+		cout << "user " << i << " " << "room joined" << users[i].joined_room_id << endl;
 		if (users[i].joined_room_id == -1) {
 			int ret2 = Send(users[i].socket, send_buff_for_other_user, 6, 0);
 		}
 	}
 };
 
+unsigned __stdcall timer_thread(void *param) {
+	int count = 0;
+	int room_id = (int)param;
+	while (count < 4) {
+		int test_time = 2000;
+		Sleep(test_time);
+		count++;
+		cout << "timer" << endl;
+		/*for (int i = 0; i < rooms.size(); i++) {
+			if (rooms[i].room_id == room_id) {
+				get_message_send_time_notification(count, send_buff_for_send_notification, rooms[i].current_item.current_price, rooms[i].current_highest_bid_user_id);
+				send_time_notification(room_id, send_buff_for_send_notification, &rooms);
+			}
+		}*/
+	}
+
+	// set user_id as an owner when the time is over
+	for (int i = 0; i < rooms.size(); i++) {
+		if (rooms[i].room_id == room_id) {
+			get_message_send_time_notification(count, send_buff_for_send_notification, rooms[i].current_item.current_price, rooms[i].current_highest_bid_user_id);
+			send_time_notification(room_id, send_buff_for_send_notification, &rooms);
+		}
+	}
+
+	return 0;
+}
 
 void join_room_handler(char payload_buff[], SOCKET s) {
 	int current_user_count;
@@ -345,8 +375,8 @@ void join_room_handler(char payload_buff[], SOCKET s) {
 void sell_item_handler(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, SOCKET client, int room_id) {
 	int send_bytes = sell_item(item_name, item_description, owner_id, start_price, buy_now_price, rooms, room_id, send_buff_for_user, send_buff_for_other_user);
 
-	//hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void *)room_id, 0, 0); //start time thread
-	//rooms[room_id].timer_thread = hthread;
+	hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void *)room_id, 0, 0); //start time thread
+	rooms[room_id].timer_thread = hthread;
 
 	int ret = Send(client, send_buff_for_user, 5, 0);
 	if (ret == SOCKET_ERROR) {
@@ -422,6 +452,8 @@ void leave_room_handler(char payload_buff[], SOCKET s) {
 			current_room = r;
 		}
 	}
+
+	cout << "user count:" << current_room.user_list.size() << endl;
 	for (int i = 0; i < current_room.user_list.size(); i++) {
 		Send(current_room.user_list[i].socket, send_buff_for_other_user, 9, 0);
 	}
