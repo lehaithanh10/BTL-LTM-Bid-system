@@ -441,7 +441,7 @@ void buy_now_handler(char payload_buff[], SOCKET s) {
 };
 
 void leave_room_handler(char payload_buff[], SOCKET s) {
-	int room_id = payload_buff[0];
+	int room_id = (unsigned char) payload_buff[0];
 	int user_id = s;
 	leave_room(room_id, user_id, rooms, users, send_buff_for_user, send_buff_for_other_user);
 	Send(s, send_buff_for_user, 5, 0);
@@ -493,5 +493,8 @@ void handle_request(unsigned char opcode, char* payload_buff, SOCKET client_sock
 	}
 	else if (opcode == BUYNOW) {
 		buy_now_handler(payload_buff, client_socket);
+	}
+	else if (opcode == LEAVEROOM) {
+		leave_room_handler(payload_buff, client_socket);
 	}
 }

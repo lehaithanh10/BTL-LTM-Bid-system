@@ -52,11 +52,9 @@ int create_room(SOCKET client, vector<User> &list_user, vector<Room> &list_room,
 		if (list_user[i].user_id == client) {
 			list_user[i].joined_room_id = list_room.size();
 			new_room.user_list.push_back(list_user[i]);
-			new_room.hosterName = list_user[i].name;
+			new_room.hoster_name = list_user[i].name;
 		}
 	}
-	cout << new_room.user_list.size() << endl;
-	cout << new_room.hosterName << endl;
 	new_room.room_id = list_room.size();
 	list_room.push_back(new_room);
 	int code_for_user = SUCCESS_CREATE_ROOM;
@@ -82,13 +80,11 @@ int sell_item(string item_name, string item_description, int owner_id, int start
 	int item_quantity;
 	for (int i = 0; i < list_room.size(); i++) {
 		if (list_room[i].room_id == room_id) {
-			if (list_room[i].room_id == room_id) {
-				if (list_room[i].item_list.size() == 0) {
-					list_room[i].current_item = new_item;
-				}
-				list_room[i].item_list.push_back(new_item);
-				item_quantity = list_room[i].item_list.size();
+			if (list_room[i].item_list.size() == 0) {
+				list_room[i].current_item = new_item;
 			}
+			list_room[i].item_list.push_back(new_item);
+			item_quantity = list_room[i].item_list.size();
 		}
 	}
 
@@ -248,13 +244,16 @@ int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& us
 }
 
 void leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &users, char send_buff_for_user[], char send_buff_for_other_user[]) {
+	cout << "user_id1: " << user_id << endl;
+	cout << "room_id: " << room_id << endl;
 	for (int i = 0; i < rooms.size(); i++) {
 		if (rooms[i].room_id == room_id) {
 			for (int j = 0; j < rooms[i].user_list.size(); j++) {
 				if ((rooms[i].user_list)[j].user_id == user_id) {
-					((rooms)[i].user_list).erase(((rooms)[i].user_list).begin() + j);
+					cout << "user_id: " << user_id << endl;
+					(rooms)[i].user_list.erase(((rooms)[i].user_list).begin() + j);
 					int user_quantity = (rooms)[i].user_list.size();
-					cout << "Left user in room: " << (rooms)[i].user_list.size() << endl;
+					cout << "Left user in room: " << user_quantity << endl;
 					send_buff_for_user[0] = SUCCESS_LEAVE_ROOM;
 					send_buff_for_other_user[0] = NOTI_SUCCESS_LEAVE_ROOM;
 					int length_for_user = 0;

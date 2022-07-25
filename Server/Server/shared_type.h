@@ -24,7 +24,7 @@ struct Item {
 
 struct Room {
 	int room_id;
-	string hosterName;
+	string hoster_name;
 	vector<User> user_list;
 	vector<Item> item_list;
 	Item current_item;
