@@ -1,4 +1,7 @@
 ﻿  Server.cpp
-c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(311): warning C4018: '<': signed/unsigned mismatch
-  Server.vcxproj -> C:\Users\MY LAPTOP\OneDrive\Desktop\BK\Network_Programming\FinalNewVer2\Server\Debug\Server.exe
-  Server.vcxproj -> C:\Users\MY LAPTOP\OneDrive\Desktop\BK\Network_Programming\FinalNewVer2\Server\Debug\Server.pdb (Full PDB)
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(311): warning C4018: '<': signed/unsigned mismatch
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(356): warning C4101: 'tmp': unreferenced local variable
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(377): warning C4101: 'tmp': unreferenced local variable
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(379): warning C4101: 'current_price': unreferenced local variable
+  Server.vcxproj -> F:\20212\Network programing\Code\BTL_LTM\BTL-LTM-Bid-system\Server\Debug\Server.exe
+  Server.vcxproj -> F:\20212\Network programing\Code\BTL_LTM\BTL-LTM-Bid-system\Server\Debug\Server.pdb (Full PDB)

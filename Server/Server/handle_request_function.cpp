@@ -16,8 +16,19 @@ User* find_user_by_id(int id, vector<User> users) {
 	}
 	return NULL;
 }
+
+Room* find_room_by_id(int id, vector<Room> rooms) {
+	for (auto &u : rooms) {
+		if (u.room_id == id)
+			return &u;
+	}
+	return NULL;
+}
+
+
 int login(char payload_buff[], SOCKET s, vector<Room> rooms, vector<User> &users, char send_buff[]) {
 	struct User u;
+
 	string name(payload_buff);
 	u.name = name;
 	u.user_id = s;
@@ -26,6 +37,7 @@ int login(char payload_buff[], SOCKET s, vector<Room> rooms, vector<User> &users
 	int payload_len = rooms.size();
 	send_buff[0] = SUCCESS_LOGIN;
 	memcpy(send_buff + 1, &payload_len, 4);
+	printf("%d\n", payload_len);
 	if (payload_len == 0) return 5;
 	for (unsigned int i = 0; i < rooms.size(); i++) {
 		send_buff[i + 5] = rooms[i].room_id;
@@ -110,12 +122,21 @@ int join_room(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& 
 					send_buff[0] = SUCCESS_JOIN_ROOM;
 					memcpy(send_buff + 1, &payload_len, 4);
 					//append payload
+
+					memcpy(send_buff+5, v.name.c_str(), v.name.size());//userHostName
+
 					memcpy(send_buff + 5, v.name.c_str(), 100);//userHostName
+
 					int user_quantity = u.user_list.size();
 					memcpy(send_buff + 105, &user_quantity, 4);//userQuantity
 					int item_quantity = u.item_list.size();
 					memcpy(send_buff + 109, &item_quantity, 4);//itemQuantity
 					User* highest_bid = find_user_by_id(u.current_highest_bid_user_id, users);
+
+					if(highest_bid != NULL)
+						memcpy(send_buff + 113,highest_bid->name.c_str(), highest_bid->name.size());//currentHighestBidName
+					memcpy(send_buff + 213, u.current_item.name.c_str(), u.current_item.name.size());//currentItemName
+
 					if (highest_bid != NULL)
 						memcpy(send_buff + 113, highest_bid->name.c_str(), 100);//currentHighestBidName
 					memcpy(send_buff + 213, u.current_item.name.c_str(), 100);//currentItemName
@@ -132,16 +153,87 @@ int join_room(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& 
 			}
 		}
 	}
-	return 99;
+	return 5;
 }
 
-string bid() {
-	string res;
-	return res;
+int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[],char user_name[], int& current_price) {
+	int res;
+	int room_id = *(unsigned char*)(payload_buff);
+	int price = *(int*)(payload_buff + 1);
+	Room* r = find_room_by_id(room_id, rooms);
+	if (r == NULL) {
+		send_buff[0] = SOMETHING_WRONG_WHEN_CONNECT;
+		int length = 0;
+		memcpy(send_buff + 1, &length, 4);
+		return HEADER_LENGTH;
+	}
+	User* u = find_user_by_id(s, users);
+	if (u == NULL) {
+		send_buff[0] = SOMETHING_WRONG_WHEN_CONNECT;
+		int length = 0;
+		memcpy(send_buff + 1, &length, 4);
+		return HEADER_LENGTH;
+	}
+	if (s == r->current_item.owner_id) {
+		send_buff[0] = CREATOR_CANT_BID_ITEM;
+		int length = 0;
+		memcpy(send_buff + 1, &length, 4);
+		return HEADER_LENGTH;
+	}
+	if (price > r->current_item.start_price && price > r->current_item.current_price) 
+		r->current_highest_bid_user_id = s;
+	else {
+		send_buff[0] = INVALID_PRICE_BID;
+		int length = 0;
+		memcpy(send_buff + 1, &length, 4);
+		return HEADER_LENGTH;
+	}
+	memcpy(user_name, u->name.c_str(),u->name.size() );
+	current_price = price;
+	send_buff[0] = SUCCESS_BID_ITEM;
+	int length = 0;
+	memcpy(send_buff + 1, &length, 4);
+
+	return HEADER_LENGTH;
 }
 
-string buy_now() {
-	string res;
-	return res;
+int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[], char user_name[]) {
+	int res;
+	int room_id = *(unsigned char*)(payload_buff);
+	int price = *(int*)(payload_buff + 1);
+	Room* r = find_room_by_id(room_id, rooms);
+	if (r == NULL) {
+		send_buff[0] = SOMETHING_WRONG_WHEN_CONNECT;
+		int length = 0;
+		memcpy(send_buff + 1, &length, 4);
+		return HEADER_LENGTH;
+	}
+	User* u = find_user_by_id(s, users);
+	if (u == NULL) {
+		send_buff[0] = SOMETHING_WRONG_WHEN_CONNECT;
+		int length = 0;
+		memcpy(send_buff + 1, &length, 4);
+		return HEADER_LENGTH;
+	}
+	if (s == r->current_item.owner_id) {
+		send_buff[0] = CREATOR_CANT_BUY_ITEM;
+		int length = 0;
+		memcpy(send_buff + 1, &length, 4);
+		return HEADER_LENGTH;
+	}
+	if (price < r->current_item.buy_now_price) {
+		send_buff[0] = INVALID_PRICE_BUY;
+		int length = 0;
+		memcpy(send_buff + 1, &length, 4);
+		return HEADER_LENGTH;
+	}
+	
+	memcpy(user_name, u->name.c_str(), u->name.size());
+
+	send_buff[0] = SUCCESS_BUY_IMMEDIATELY;
+	int length = 0;
+	memcpy(send_buff + 1, &length, 4);
+
+	return HEADER_LENGTH;
 }
 
