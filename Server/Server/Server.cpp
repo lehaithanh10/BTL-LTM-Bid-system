@@ -459,10 +459,10 @@ void handle_request(unsigned char opcode, char* payload_buff, SOCKET client_sock
 		int owner_id = client_socket;
 		char item_name[100];
 		memcpy(item_name, payload_buff + 3, 100);
-		int start_price = *(int*)(payload_buff + 103);
-		int buy_now_price = *(int*)(payload_buff + 107);
+		int start_price = *(int*)(payload_buff + 101);
+		int buy_now_price = *(int*)(payload_buff + 105);
 		char item_description[100];
-		memcpy(item_name, payload_buff + 111, 100);
+		memcpy(item_name, payload_buff + 109, 100);
 		sell_item_handler(string(item_name), string(item_description), owner_id, start_price, buy_now_price, client_socket, room_id);
 	}
 	else if (opcode == BIDITEM) {

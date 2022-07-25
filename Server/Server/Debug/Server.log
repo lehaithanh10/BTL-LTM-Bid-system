@@ -2,7 +2,7 @@
 f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\define_variable.h(34): warning C4005: 'SOMETHING_WRONG_WHEN_BUYNOW': macro redefinition
   f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\define_variable.h(33): note: see previous definition of 'SOMETHING_WRONG_WHEN_BUYNOW'
 f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(52): warning C4018: '<': signed/unsigned mismatch
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(82): warning C4018: '<': signed/unsigned mismatch
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(83): warning C4018: '<': signed/unsigned mismatch
 f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(169): warning C4101: 'res': unreferenced local variable
 f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(221): warning C4101: 'res': unreferenced local variable
 f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(271): warning C4018: '<': signed/unsigned mismatch
