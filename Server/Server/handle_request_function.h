@@ -39,7 +39,7 @@ int join_room(char[], SOCKET, vector<Room>&, vector<User>&, char[], int&);
 * @param room(vector<Room>*): created room list
 * @return response code (defined in status_code.h)
 */
-int bid(char[], SOCKET, vector<Room>&, vector<User>&, char[],char[], int&);
+int bid(char[], SOCKET, vector<Room>&, vector<User>&, char[],char[],char[], int&);
 
 /*
 * @function buy_immediately: end timer thread immediately and update new owner, or refuse if information is invalid
@@ -48,7 +48,7 @@ int bid(char[], SOCKET, vector<Room>&, vector<User>&, char[],char[], int&);
 * @param room(vector<Room>*): created room list
 * @return response code (defined in status_code.h)
 */
-int buy_now(char[], SOCKET, vector<Room>&, vector<User>&, char[], char[]);
+int buy_now(char[], SOCKET, vector<Room>&, vector<User>&, char[],char[], char[]);
 
 /*
 * @function buy_immediately: end timer thread immediately and update new owner, or refuse if information is invalid
@@ -57,7 +57,7 @@ int buy_now(char[], SOCKET, vector<Room>&, vector<User>&, char[], char[]);
 * @param room(vector<Room>*): created room list
 * @return response code (defined in status_code.h)
 */
-int sell_item(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, vector<Room> &list_room, int room_id, char send_buff_for_user[], char send_buff_for_other_user[]);
+int sell_item(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, vector<Room> &list_room,vector<User>, int room_id, char send_buff_for_user[], char send_buff_for_other_user[]);
 
 
 /*
@@ -71,4 +71,30 @@ int sell_item(string item_name, string item_description, int owner_id, int start
 * @param id_count(int*): room of previous created room id, use to auto generate room id
 * @return response code (defined in status_code.h)
 */
-int create_room(SOCKET client, vector<User> list_user, vector<Room> &list_room, char send_buff_for_user[], char send_buff_for_other_user[]);
+int create_room(SOCKET client, vector<User> &list_user, vector<Room> &list_room, char send_buff_for_user[], char send_buff_for_other_user[]);
+
+/*
+* @function leave_room: start new timer thread, or refuse if information is invalid
+* @param user_id(string): user id
+* @param item_name(string): name of the item
+* @param item_description(string): description of the item
+* @param starting_price(int): starting price of the item
+* @param buy_immediately_price(int): price that user can buy immediately
+* @param room(vector<Room>*): created room list
+* @param id_count(int*): room of previous created room id, use to auto generate room id
+* @return response code (defined in status_code.h)
+*/
+void leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &users, char send_buff_for_user[], char send_buff_for_other_user[]);
+
+/*
+* @function send_time_notification: start new timer thread, or refuse if information is invalid
+* @param user_id(string): user id
+* @param item_name(string): name of the item
+* @param item_description(string): description of the item
+* @param starting_price(int): starting price of the item
+* @param buy_immediately_price(int): price that user can buy immediately
+* @param room(vector<Room>*): created room list
+* @param id_count(int*): room of previous created room id, use to auto generate room id
+* @return response code (defined in status_code.h)
+*/
+void send_time_notification(int room_id, char buff[], vector<Room> *rooms);

@@ -1,13 +1,10 @@
-﻿  handle_request_function.cpp
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(50): warning C4018: '<': signed/unsigned mismatch
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(81): warning C4018: '<': signed/unsigned mismatch
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(159): warning C4101: 'res': unreferenced local variable
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(200): warning C4101: 'res': unreferenced local variable
-  Server.cpp
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(320): warning C4018: '<': signed/unsigned mismatch
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(365): warning C4101: 'tmp': unreferenced local variable
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(386): warning C4101: 'tmp': unreferenced local variable
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(388): warning C4101: 'current_price': unreferenced local variable
-  Generating Code...
+﻿  Server.cpp
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(323): warning C4018: '<': signed/unsigned mismatch
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(347): warning C4018: '<': signed/unsigned mismatch
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(392): warning C4018: '<': signed/unsigned mismatch
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(403): warning C4101: 'tmp': unreferenced local variable
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(414): warning C4101: 'tmp': unreferenced local variable
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(416): warning C4101: 'current_price': unreferenced local variable
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(436): warning C4018: '<': signed/unsigned mismatch
   Server.vcxproj -> F:\20212\Network programing\Code\BTL_LTM\BTL-LTM-Bid-system\Server\Debug\Server.exe
   Server.vcxproj -> F:\20212\Network programing\Code\BTL_LTM\BTL-LTM-Bid-system\Server\Debug\Server.pdb (Full PDB)

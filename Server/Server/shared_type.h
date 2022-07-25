@@ -29,5 +29,6 @@ struct Room {
 	vector<Item> item_list;
 	Item current_item;
 	int current_highest_bid_user_id;
+	HANDLE timer_thread;
 };
 
