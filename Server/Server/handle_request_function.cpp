@@ -77,6 +77,7 @@ int sell_item(string item_name, string item_description, int owner_id, int start
 	new_item.description = item_description;
 	new_item.owner_id = owner_id;
 	new_item.start_price = start_price;
+	new_item.current_price = start_price;
 	new_item.buy_now_price = buy_now_price;
 	int item_quantity;
 	for (int i = 0; i < list_room.size(); i++) {
@@ -132,10 +133,7 @@ int join_room(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& 
 					memcpy(send_buff + 1, &payload_len, 4);
 					//append payload
 
-					memcpy(send_buff + 5, user.name.c_str(), user.name.size());//userHostName
-
-					memcpy(send_buff + 5, user.name.c_str(), 100);//userHostName
-
+					memcpy(send_buff + 5,	room.hoster_name.c_str(), user.name.size());//userHostName
 					int user_quantity = room.user_list.size();
 					memcpy(send_buff + 105, &user_quantity, 4);//userQuantity
 					int item_quantity = room.item_list.size();
