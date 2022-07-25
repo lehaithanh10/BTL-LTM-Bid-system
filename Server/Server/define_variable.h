@@ -11,14 +11,18 @@
 #define SUCCESS_BUY_IMMEDIATELY 60
 #define CREATOR_CANT_BUY_ITEM 61
 #define INVALID_PRICE_BUY 62
+#define TIME_NOTIFICATION 70
 #define SUCCESS_LEAVE_ROOM 90
 
-//response code for other user 
+//response code for noti user 
+#define NOTI_ITEM_SOLD 80
 #define NOTI_SUCCESS_CREATE_ROOM 82
 #define NOTI_SUCCESS_JOIN_ROOM 83
 #define NOTI_SUCCESS_SELL_ITEM 84
 #define NOTI_SUCCESS_BID_ITEM 85
 #define NOTI_SUCCESS_BUY_NOW 86
+#define	NOTI_UPDATE_CURRENT_ITEM 87
+#define NOTI_SUCCESS_LEAVE_ROOM 89
 
 // error code 
 #define SOMETHING_WRONG_WHEN_LOGIN 19
@@ -35,7 +39,8 @@
 #define JOINROOM 130
 #define SELLITEM 140
 #define BIDITEM 150
-#define BUYNOW 160	
+#define BUYNOW 160
+#define LEAVEROOM 170
 
 // common variable
 #define BUFF_SIZE 2048
