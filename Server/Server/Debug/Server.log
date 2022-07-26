@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿  handle_request_function.cpp
 c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\define_variable.h(34): warning C4005: 'SOMETHING_WRONG_WHEN_BUYNOW': macro redefinition
   c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\define_variable.h(33): note: see previous definition of 'SOMETHING_WRONG_WHEN_BUYNOW'
@@ -20,3 +21,7 @@ c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\s
 c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(413): error C2660: 'bid': function does not take 6 arguments
 c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(462): warning C4018: '<': signed/unsigned mismatch
   Generating Code...
+=======
+﻿  Server.vcxproj -> F:\20212\Network programing\Code\BTL_LTM\BTL-LTM-Bid-system\Server\Debug\Server.exe
+  Server.vcxproj -> F:\20212\Network programing\Code\BTL_LTM\BTL-LTM-Bid-system\Server\Debug\Server.pdb (Full PDB)
+>>>>>>> 046c4c2d2acba36587f82d89fb347c4c45bf639d
