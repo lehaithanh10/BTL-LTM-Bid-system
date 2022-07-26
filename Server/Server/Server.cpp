@@ -1,3 +1,5 @@
+
+
 // Server.cpp : Defines the entry point for the console application.
 //
 #include "stdafx.h"
@@ -282,6 +284,7 @@ unsigned __stdcall worker_thread(void *param) {
 				rcv_buff[ret] = 0;
 				byte_stream_receiver(socks[index], payload_buff, rcv_buff, 0);
 				handle_request((unsigned char)rcv_buff[0], payload_buff, socks[index]);
+				cout << "after handle request\n";
 				//reset event
 				WSAResetEvent(events[index]);
 			}
@@ -331,36 +334,63 @@ unsigned __stdcall timer_thread(void *param) {
 	int count = 0;
 	int room_id = (int)param;
 	while (count <= 3) {
-		int test_time = 5000;
+
+		int test_time = 30000;
 		Sleep(test_time);
 		count++;
 		int status_code = TIME_NOTIFICATION;
 		int messsage_length = 1;
 		memcpy(send_buff_for_send_notification, &status_code, 1);
 		memcpy(send_buff_for_send_notification + 1, &messsage_length, 4);
-		memcpy(send_buff_for_send_notification + 5, &count, 4);
+		memcpy(send_buff_for_send_notification + 5, &count, 1);
 
 		for (int i = 0; i < rooms.size(); i++) {
 			if (rooms[i].room_id == room_id) {
-				send_time_notification(room_id, send_buff_for_send_notification, &rooms, 9);
+				send_time_notification(room_id, send_buff_for_send_notification, &rooms, 6);
 			}
 		}
 	}
 
 	int new_status_code = NOTI_ITEM_SOLD;
-	int new_messsage_length = 1;
+	int new_messsage_length = 0;
 	memcpy(send_buff_for_send_notification, &new_status_code, 1);
 	memcpy(send_buff_for_send_notification + 1, &new_messsage_length, 4);
 	memcpy(send_buff_for_send_notification + 5, &count, 1);
 	for (int i = 0; i < rooms.size(); i++) {
 		if (rooms[i].room_id == room_id) {
-			send_time_notification(room_id, send_buff_for_send_notification, &rooms, 6);
+			send_time_notification(room_id, send_buff_for_send_notification, &rooms, 5);
+
+			rooms[i].item_list.erase(rooms[i].item_list.begin());
+			if (rooms[i].item_list.size() > 0) {
+				rooms[i].current_item = rooms[i].item_list[0];
+				update_current_item(send_buff_for_other_user, rooms[i].current_item.name.c_str(), rooms[i].current_item.start_price, rooms[i].current_item.buy_now_price, rooms[i].current_item.description.c_str(), users, room_id);
+			}
+			else {
+				update_current_item(send_buff_for_other_user, "", 0, 0, "", users, room_id);
+				TerminateThread(rooms[room_id].timer_thread, 0);
+			}
+			break;
 		}
 	}
 
 	return 0;
 }
-
+//void update_current_item(char send_buff_for_other_user[], const char item_name[], int start_price, int buy_now_price, const char description[], vector<User> users, int room_id) {
+//	hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void*)room_id, 0, 0); //start time thread
+//	rooms[room_id].timer_thread = hthread;
+//
+//	int length = 108 + strlen(description);
+//	send_buff_for_other_user[0] = NOTI_UPDATE_CURRENT_ITEM;
+//	memcpy(send_buff_for_other_user + 1, &length, 4);
+//	memcpy(send_buff_for_other_user + 5, item_name, 100);
+//	memcpy(send_buff_for_other_user + 105, &start_price, 4);
+//	memcpy(send_buff_for_other_user + 109, &buy_now_price, 4);
+//	for (auto& user : users) {
+//		if (user.joined_room_id == room_id) {
+//			Send(user.socket, send_buff_for_other_user, length + HEADER_LENGTH, 0);
+//		}
+//	}
+//}
 void join_room_handler(char payload_buff[], SOCKET s) {
 	int current_user_count;
 	int room_id = payload_buff[0];
@@ -369,8 +399,9 @@ void join_room_handler(char payload_buff[], SOCKET s) {
 
 	//send update information to other client
 	send_buff_for_other_user[0] = NOTI_UPDATE_USER_QUANTITY;
-	int messsage_length = 1;
-	memcpy(send_buff_for_other_user + 1, &messsage_length, 4);
+	int message_length = 4;
+	memcpy(send_buff_for_other_user + 1, &message_length, 4);
+
 	memcpy(send_buff_for_other_user + 5, &current_user_count, 4);
 	for (auto &u : users) {
 		if (u.joined_room_id != -1 && u.joined_room_id == room_id && u.socket != s) {
@@ -380,8 +411,10 @@ void join_room_handler(char payload_buff[], SOCKET s) {
 };
 
 void sell_item_handler(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, SOCKET client, int room_id) {
+
 	int send_bytes = sell_item(item_name, item_description, owner_id, start_price, buy_now_price, rooms, users, room_id, send_buff_for_user, send_buff_for_other_user);
-	hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void *)room_id, 0, 0); //start time thread
+	hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void*)room_id, 0, 0); //start time thread
+
 	rooms[room_id].timer_thread = hthread;
 	int ret = Send(client, send_buff_for_user, 5, 0);
 	if (ret == SOCKET_ERROR) {
@@ -407,27 +440,13 @@ void sell_item_handler(string item_name, string item_description, int owner_id, 
 
 void bid_handler(char payload_buff[], SOCKET s) {
 	int tmp;
-	char user_name[102];
-	int current_price;
 	int room_id = (unsigned char)payload_buff[0];
 	int send_bytes = bid(payload_buff, s, rooms, users, send_buff_for_user, send_buff_for_other_user);
 	Send(s, send_buff_for_user, send_bytes, 0);
-	//if (send_buff_for_user[0] == SUCCESS_BID_ITEM) {
-		//TerminateThread(rooms[room_id].timer_thread, 0);
-		//hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void *)room_id, 0, 0); //start thread
-		//rooms[room_id].timer_thread = hthread;
-	//}
-
-	//send to other user
-	send_buff_for_other_user[0] = NOTI_SUCCESS_BID_ITEM;
-	int length = 104;
-	memcpy(send_buff_for_other_user + 1, &length, 4);
-	memcpy(send_buff_for_other_user + 5, user_name, 100);
-	memcpy(send_buff_for_other_user + 105, &current_price, 4);
-	for (auto &u : users) {
-		if (u.joined_room_id != -1 && u.joined_room_id == room_id && u.socket != s) {
-			Send(u.socket, send_buff_for_other_user, 109, 0);
-		}
+	if (send_buff_for_user[0] == SUCCESS_BID_ITEM) {
+		TerminateThread(rooms[room_id].timer_thread, 0);
+		hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void*)room_id, 0, 0); //start thread
+		rooms[room_id].timer_thread = hthread;
 	}
 	if (send_buff_for_user[0] == SUCCESS_BID_ITEM) {
 		TerminateThread(rooms[room_id].timer_thread, 0);
@@ -438,7 +457,6 @@ void bid_handler(char payload_buff[], SOCKET s) {
 
 void buy_now_handler(char payload_buff[], SOCKET s) {
 	int tmp;
-	char user_name[102];
 	int current_price;
 	int room_id = (unsigned char)payload_buff[0];
 	int send_bytes = buy_now(payload_buff, s, rooms, users, send_buff_for_user, send_buff_for_other_user);
@@ -480,6 +498,7 @@ void handle_request(unsigned char opcode, char* payload_buff, SOCKET client_sock
 		int room_id = payload_buff[0];
 		int owner_id = client_socket;
 		char item_name[100];
+
 		memcpy(item_name, payload_buff + 1, 100);
 		int start_price = *(int*)(payload_buff + 101);
 		int buy_now_price = *(int*)(payload_buff + 105);
