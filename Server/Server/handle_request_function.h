@@ -39,12 +39,8 @@ int join_room(char[], SOCKET, vector<Room>&, vector<User>&, char[], int&);
 * @param room(vector<Room>*): created room list
 * @return response code (defined in status_code.h)
 */
-<<<<<<< HEAD
-int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[], char send_buff_for_other_user[], char user_name[], int& current_price);
-=======
-int bid(char[], SOCKET, vector<Room>&, vector<User>&, char[],char[]);
 
->>>>>>> 046c4c2d2acba36587f82d89fb347c4c45bf639d
+int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[], char send_buff_for_other_user[]);
 
 /*
 * @function buy_immediately: end timer thread immediately and update new owner, or refuse if information is invalid
@@ -53,11 +49,8 @@ int bid(char[], SOCKET, vector<Room>&, vector<User>&, char[],char[]);
 * @param room(vector<Room>*): created room list
 * @return response code (defined in status_code.h)
 */
-<<<<<<< HEAD
 int buy_now(char[], SOCKET, vector<Room>&, vector<User>&, char[], char[]);
-=======
-int buy_now(char[], SOCKET, vector<Room>&, vector<User>&, char[],char[]);
->>>>>>> 046c4c2d2acba36587f82d89fb347c4c45bf639d
+
 
 /*
 * @function buy_immediately: end timer thread immediately and update new owner, or refuse if information is invalid
