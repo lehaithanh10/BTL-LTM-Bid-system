@@ -94,7 +94,7 @@ int sell_item(string item_name, string item_description, int owner_id, int start
 	int code_for_user = SUCCESS_SELL_ITEM;
 	int length_for_user = 0;
 	memcpy(send_buff_for_user, &code_for_user, 1);
-	memcpy(send_buff_for_other_user + 1, &length_for_user, 4);
+	memcpy(send_buff_for_user + 1, &length_for_user, 4);
 	int length_for_other = 4;
 	int code_for_other_user = NOTI_SUCCESS_SELL_ITEM;
 	memcpy(send_buff_for_other_user, &code_for_other_user, 1);
@@ -120,7 +120,7 @@ int join_room(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& 
 						send_buff[0] = SUCCESS_JOIN_ROOM;//opcode
 						int payload_len = 320;
 						memcpy(send_buff + 1, &payload_len, 4);//length
-						memcpy(send_buff + 5, user.name.c_str(), 100);//userName
+						memcpy(send_buff + 5, room.hoster_name.c_str(), 100);//userName
 						int userQuantity = room.user_list.size();
 						memcpy(send_buff + 105, &userQuantity, 4);//userQuantity
 						return payload_len + HEADER_LENGTH;
@@ -188,8 +188,6 @@ int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users,
 					}
 					r.current_highest_bid_user_id = s;
 					
-					memcpy(user_name, u.name.c_str(), u.name.size());
-					current_price = price;
 					send_buff[0] = SUCCESS_BID_ITEM;
 					int length = 0;
 					memcpy(send_buff + 1, &length, 4);
@@ -197,8 +195,8 @@ int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users,
 					send_buff_for_other_user[0] = NOTI_SUCCESS_BID_ITEM;
 					int length_for_other_user = 104;
 					memcpy(send_buff_for_other_user + 1, &length_for_other_user, 4);
-					memcpy(send_buff_for_other_user + 5, user_name, 100);
-					memcpy(send_buff_for_other_user + 105, &current_price, 4);
+					memcpy(send_buff_for_other_user + 5, u.name.c_str(), 100);
+					memcpy(send_buff_for_other_user + 105, &price, 4);
 					for (auto &u : users) {
 						if (u.joined_room_id == room_id && u.socket != s) {
 							Send(u.socket, send_buff_for_other_user, 109, 0);
@@ -218,7 +216,7 @@ int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users,
 	return HEADER_LENGTH;
 }
 
-int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[],char send_buff_for_other_user[], char user_name[]) {
+int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[], char send_buff_for_other_user[]) {
 	int res;
 	int room_id = *(unsigned char*)(payload_buff);
 	int price = *(int*)(payload_buff + 1);
@@ -239,24 +237,27 @@ int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& us
 						memcpy(send_buff + 1, &length, 4);
 						return HEADER_LENGTH;
 					}
-					memcpy(user_name, u.name.c_str(), u.name.size());
-					send_buff[0] = SUCCESS_BID_ITEM;
+					send_buff[0] = SUCCESS_BUY_IMMEDIATELY;
 					int length = 0;
 					memcpy(send_buff + 1, &length, 4);
 					//Send noti to other user
-					send_buff_for_other_user[0] = NOTI_SUCCESS_BID_ITEM;
+					send_buff_for_other_user[0] = NOTI_SUCCESS_BUY_NOW;
 					int length_for_other_user = 100;
 					memcpy(send_buff_for_other_user + 1, &length_for_other_user, 4);
-					memcpy(send_buff_for_other_user + 5, user_name, 100);
-					for (auto &u : users) {
-						if (u.joined_room_id == room_id && u.socket != s) {
-							Send(u.socket, send_buff_for_other_user, 105, 0);
-						}
+					memcpy(send_buff_for_other_user + 5, u.name.c_str(), 100);
+					for (auto &other_user : users) {
+						if (other_user.joined_room_id == room_id && other_user.socket != s) {
+							Send(other_user.socket, send_buff_for_other_user, 105, 0);
 					}
 					//update item list and send update
-					r.item_list.erase(r.item_list.begin());
-					r.current_item = r.item_list[0];
-					update_current_item(send_buff_for_other_user, r.current_item.name.c_str(), r.current_item.start_price, r.current_item.buy_now_price, r.current_item.description.c_str(), users, room_id);
+					if (r.item_list.size() > 0) {
+						r.current_item = r.item_list[0];
+						update_current_item(send_buff_for_other_user, r.current_item.name.c_str(), r.current_item.start_price, r.current_item.buy_now_price, r.current_item.description.c_str(), users, room_id);
+					}
+					else {
+						update_current_item(send_buff_for_other_user, "", 0, 0, "", users, room_id);
+						TerminateThread(rooms[room_id].timer_thread, 0);
+					}
 
 					return HEADER_LENGTH;
 				}
