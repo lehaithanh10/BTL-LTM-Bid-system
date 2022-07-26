@@ -86,4 +86,4 @@ int create_room(SOCKET client, vector<User> &list_user, vector<Room> &list_room,
 * @param id_count(int*): room of previous created room id, use to auto generate room id
 * @return response code (defined in status_code.h)
 */
-void leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &users, char send_buff_for_user[], char send_buff_for_other_user[]);
+int leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &users, char send_buff_for_user[], char send_buff_for_other_user[]);

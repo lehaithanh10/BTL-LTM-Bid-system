@@ -176,7 +176,7 @@ int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users,
 						memcpy(send_buff + 1, &length, 4);
 						return HEADER_LENGTH;
 					}
-					if (price < r.current_item.start_price && price < r.current_item.current_price) {
+					if (price < r.current_item.current_price + 10000) {
 						send_buff[0] = INVALID_PRICE_BID;
 						int length = 0;
 						memcpy(send_buff + 1, &length, 4);
@@ -259,7 +259,7 @@ int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& us
 	}
 }
 
-void leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &users, char send_buff_for_user[], char send_buff_for_other_user[]) {
+int leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &users, char send_buff_for_user[], char send_buff_for_other_user[]) {
 	for (int i = 0; i < rooms.size(); i++) {
 		if (rooms[i].room_id == room_id) {
 			for (int j = 0; j < rooms[i].user_list.size(); j++) {
@@ -285,4 +285,9 @@ void leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &use
 			break;
 		}
 	}
+	for (unsigned int i = 0; i < rooms.size(); i++) {
+		send_buff_for_user[i + 5] = rooms[i].room_id;
+	}
+	cout << rooms.size() + 5 << endl;
+	return 	rooms.size() + 5;
 }
