@@ -39,7 +39,17 @@ int join_room(char[], SOCKET, vector<Room>&, vector<User>&, char[], int&);
 * @param room(vector<Room>*): created room list
 * @return response code (defined in status_code.h)
 */
-int bid(char[], SOCKET, vector<Room>&, vector<User>&, char[],char[]);
+
+int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[], char send_buff_for_other_user[]);
+
+/*
+* @function buy_immediately: end timer thread immediately and update new owner, or refuse if information is invalid
+* @param room_id(string): room id
+* @param user_id(string): user id
+* @param room(vector<Room>*): created room list
+* @return response code (defined in status_code.h)
+*/
+int buy_now(char[], SOCKET, vector<Room>&, vector<User>&, char[], char[]);
 
 
 /*
@@ -49,16 +59,7 @@ int bid(char[], SOCKET, vector<Room>&, vector<User>&, char[],char[]);
 * @param room(vector<Room>*): created room list
 * @return response code (defined in status_code.h)
 */
-int buy_now(char[], SOCKET, vector<Room>&, vector<User>&, char[],char[]);
-
-/*
-* @function buy_immediately: end timer thread immediately and update new owner, or refuse if information is invalid
-* @param room_id(string): room id
-* @param user_id(string): user id
-* @param room(vector<Room>*): created room list
-* @return response code (defined in status_code.h)
-*/
-int sell_item(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, vector<Room> &list_room,vector<User>, int room_id, char send_buff_for_user[], char send_buff_for_other_user[]);
+int sell_item(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, vector<Room> &list_room, vector<User>, int room_id, char send_buff_for_user[], char send_buff_for_other_user[]);
 
 
 /*
@@ -85,4 +86,4 @@ int create_room(SOCKET client, vector<User> &list_user, vector<Room> &list_room,
 * @param id_count(int*): room of previous created room id, use to auto generate room id
 * @return response code (defined in status_code.h)
 */
-void leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &users, char send_buff_for_user[], char send_buff_for_other_user[]);
+int leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &users, char send_buff_for_user[], char send_buff_for_other_user[]);
