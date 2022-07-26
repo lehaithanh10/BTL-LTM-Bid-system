@@ -13,9 +13,10 @@
 #include "handle_request_function.h"
 #include "define_variable.h"
 #include "helpers.h"
-
+#include <fstream>
 using namespace std;
 #pragma comment(lib, "Ws2_32.lib")
+#pragma warning(disable : 4996)
 
 #define SERVER_ADDR "127.0.0.1"
 #define PORT 5500
@@ -27,6 +28,8 @@ char header_buff[BUFF_SIZE];
 char send_buff_for_user[BUFF_SIZE];
 char send_buff_for_other_user[BUFF_SIZE];
 char send_buff_for_send_notification[BUFF_SIZE];
+string accounts[ACCOUNT_MAX_SIZE];
+int numact = 0;
 HANDLE hthread;
 
 vector<User> users;
@@ -117,8 +120,11 @@ unsigned __stdcall timer_thread(void *param);
 * @thread worker_thread: handle connection, new children worker_thread will be created when the number of parent thread exccess maximum number of 64 clients
 */
 unsigned __stdcall worker_thread(void *param);
+void read_file(char* path);
 int main(int argc, char* argv[])
 {
+	//read account file
+	read_file("account.txt");
 	//Initiate WinSock
 	WSADATA wsaData;
 	WORD wVersion = MAKEWORD(2, 2);
@@ -126,7 +132,8 @@ int main(int argc, char* argv[])
 		printf("Winsock 2.2 is not supported\n");
 		return 0;
 	}
-
+	//
+	char server_addr[INET_ADDRSTRLEN];
 	//Construct LISTEN socket	
 	SOCKET listenSock;
 	listenSock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -135,7 +142,7 @@ int main(int argc, char* argv[])
 	sockaddr_in serverAddr;
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_port = htons(PORT);
-	inet_pton(AF_INET, SERVER_ADDR, &serverAddr.sin_addr);
+	inet_pton(AF_INET, argv[1], &serverAddr.sin_addr);
 
 
 	if (bind(listenSock, (sockaddr *)&serverAddr, sizeof(serverAddr)))
@@ -310,7 +317,7 @@ unsigned __stdcall worker_thread(void *param) {
 
 }
 void login_handler(char payload_buff[], SOCKET s) {
-	int send_bytes = login(payload_buff, s, rooms, users, send_buff_for_user);
+	int send_bytes = login(payload_buff, s, rooms, users, send_buff_for_user,accounts,numact);
 
 	Send(s, send_buff_for_user, send_bytes, 0);
 }
@@ -375,22 +382,7 @@ unsigned __stdcall timer_thread(void *param) {
 
 	return 0;
 }
-//void update_current_item(char send_buff_for_other_user[], const char item_name[], int start_price, int buy_now_price, const char description[], vector<User> users, int room_id) {
-//	hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void*)room_id, 0, 0); //start time thread
-//	rooms[room_id].timer_thread = hthread;
-//
-//	int length = 108 + strlen(description);
-//	send_buff_for_other_user[0] = NOTI_UPDATE_CURRENT_ITEM;
-//	memcpy(send_buff_for_other_user + 1, &length, 4);
-//	memcpy(send_buff_for_other_user + 5, item_name, 100);
-//	memcpy(send_buff_for_other_user + 105, &start_price, 4);
-//	memcpy(send_buff_for_other_user + 109, &buy_now_price, 4);
-//	for (auto& user : users) {
-//		if (user.joined_room_id == room_id) {
-//			Send(user.socket, send_buff_for_other_user, length + HEADER_LENGTH, 0);
-//		}
-//	}
-//}
+
 void join_room_handler(char payload_buff[], SOCKET s) {
 	int current_user_count;
 	int room_id = payload_buff[0];
@@ -466,8 +458,8 @@ void buy_now_handler(char payload_buff[], SOCKET s) {
 void leave_room_handler(char payload_buff[], SOCKET s) {
 	int room_id = (unsigned char)payload_buff[0];
 	int user_id = s;
-	leave_room(room_id, user_id, rooms, users, send_buff_for_user, send_buff_for_other_user);
-	Send(s, send_buff_for_user, 5, 0);
+	int send_bytes = leave_room(room_id, user_id, rooms, users, send_buff_for_user, send_buff_for_other_user);
+	Send(s, send_buff_for_user, send_bytes, 0);
 
 	Room current_room;
 	for (auto r : rooms) {
@@ -487,6 +479,7 @@ void handle_request(unsigned char opcode, char* payload_buff, SOCKET client_sock
 	cout << "opcode " << (long)opcode << endl;
 	if (opcode == LOGIN) {
 		login_handler(payload_buff, client_socket);
+		memset(payload_buff, 0, sizeof(payload_buff));
 	}
 	else if (opcode == CREATEROOM) {
 		create_room_handler(client_socket);
@@ -515,4 +508,20 @@ void handle_request(unsigned char opcode, char* payload_buff, SOCKET client_sock
 	else if (opcode == LEAVEROOM) {
 		leave_room_handler(payload_buff, client_socket);
 	}
+}
+void read_file(char* path) {
+	ifstream accountFile;
+	accountFile.open(path);
+
+	if (accountFile.is_open()) {
+		string line;
+
+		while (getline(accountFile, line))
+		{
+			accounts[numact] =line;
+			numact++;
+		}
+	}
+
+	return;
 }
