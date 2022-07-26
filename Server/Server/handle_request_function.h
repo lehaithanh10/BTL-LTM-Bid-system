@@ -13,7 +13,7 @@ using namespace std;
 
 * @return response code (defined in status_code.h)
 */
-int login(char[], SOCKET, vector<Room>, vector<User>&, char[]);
+int login(char[], SOCKET, vector<Room>, vector<User>&, char[],string [],int);
 
 /*
 * @function show_room: display all created room
