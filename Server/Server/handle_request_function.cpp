@@ -71,7 +71,7 @@ int create_room(SOCKET client, vector<User> &list_user, vector<Room> &list_room,
 	return 5;
 }
 
-int sell_item(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, vector<Room> &list_room,vector<User> users, int room_id, char send_buff_for_user[], char send_buff_for_other_user[]) {
+int sell_item(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, vector<Room> &list_room, vector<User> users, int room_id, char send_buff_for_user[], char send_buff_for_other_user[]) {
 	Item new_item;
 	new_item.name = item_name;
 	new_item.description = item_description;
@@ -81,18 +81,19 @@ int sell_item(string item_name, string item_description, int owner_id, int start
 	new_item.buy_now_price = buy_now_price;
 	int item_quantity;
 	for (int i = 0; i < list_room.size(); i++) {
-		if (list_room[i].room_id == room_id){
+		if (list_room[i].room_id == room_id) {
 			if (list_room[i].item_list.size() == 0) {
 				list_room[i].current_item = new_item;
-				update_current_item (send_buff_for_other_user, item_name.c_str(), start_price, buy_now_price, item_description.c_str(), users, room_id);
+				update_current_item(send_buff_for_other_user, item_name.c_str(), start_price, buy_now_price, item_description.c_str(), users, room_id);
 			}
 			list_room[i].item_list.push_back(new_item);
 			item_quantity = list_room[i].item_list.size();
 		}
-		
+
 	}
 
 	int code_for_user = SUCCESS_SELL_ITEM;
+
 	int length_for_user = 0;
 	memcpy(send_buff_for_user, &code_for_user, 1);
 	memcpy(send_buff_for_user + 1, &length_for_user, 4);
@@ -121,7 +122,7 @@ int join_room(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& 
 						send_buff[0] = SUCCESS_JOIN_ROOM;//opcode
 						int payload_len = 320;
 						memcpy(send_buff + 1, &payload_len, 4);//length
-						memcpy(send_buff + 5, user.name.c_str(), 100);//userName
+						memcpy(send_buff + 5, room.hoster_name.c_str(), 100);//userName
 						int userQuantity = room.user_list.size();
 						memcpy(send_buff + 105, &userQuantity, 4);//userQuantity
 						return payload_len + HEADER_LENGTH;
@@ -133,7 +134,7 @@ int join_room(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& 
 					memcpy(send_buff + 1, &payload_len, 4);
 					//append payload
 
-					memcpy(send_buff + 5,	room.hoster_name.c_str(), user.name.size());//userHostName
+					memcpy(send_buff + 5, room.hoster_name.c_str(), user.name.size());//userHostName
 					int user_quantity = room.user_list.size();
 					memcpy(send_buff + 105, &user_quantity, 4);//userQuantity
 					int item_quantity = room.item_list.size();
@@ -164,7 +165,7 @@ int join_room(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& 
 	return 5;
 }
 
-int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[],char send_buff_for_other_user[]) {
+int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[], char send_buff_for_other_user[]) {
 	int res;
 	int room_id = *(unsigned char*)(payload_buff);
 	int price = *(int*)(payload_buff + 1);
@@ -210,12 +211,12 @@ int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users,
 			}
 		}
 	}
-	
+
 
 	return HEADER_LENGTH;
 }
 
-int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[],char send_buff_for_other_user[]) {
+int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[], char send_buff_for_other_user[]) {
 	int res;
 	int room_id = *(unsigned char*)(payload_buff);
 	int price = *(int*)(payload_buff + 1);
@@ -230,30 +231,35 @@ int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& us
 						return HEADER_LENGTH;
 					}
 
-					if(price < r.current_item.buy_now_price) {
+					if (price < r.current_item.buy_now_price) {
 						send_buff[0] = INVALID_PRICE_BUY;
 						int length = 0;
 						memcpy(send_buff + 1, &length, 4);
 						return HEADER_LENGTH;
 					}
-					send_buff[0] = SUCCESS_BID_ITEM;
+					send_buff[0] = SUCCESS_BUY_IMMEDIATELY;
 					int length = 0;
 					memcpy(send_buff + 1, &length, 4);
 					//Send noti to other user
-					send_buff_for_other_user[0] = NOTI_SUCCESS_BID_ITEM;
+					send_buff_for_other_user[0] = NOTI_SUCCESS_BUY_NOW;
 					int length_for_other_user = 100;
 					memcpy(send_buff_for_other_user + 1, &length_for_other_user, 4);
 					memcpy(send_buff_for_other_user + 5, u.name.c_str(), 100);
-					for (auto &u : users) {
-						if (u.joined_room_id == room_id && u.socket != s) {
-							Send(u.socket, send_buff_for_other_user, 105, 0);
+					for (auto &other_user : users) {
+						if (other_user.joined_room_id == room_id && other_user.socket != s) {
+							Send(other_user.socket, send_buff_for_other_user, 105, 0);
 						}
 					}
 					//update item list and send update
 					r.item_list.erase(r.item_list.begin());
-					r.current_item = r.item_list[0];
-					update_current_item(send_buff_for_other_user, r.current_item.name.c_str(), r.current_item.start_price, r.current_item.buy_now_price, r.current_item.description.c_str(), users, room_id);
-
+					if (r.item_list.size() > 0) {
+						r.current_item = r.item_list[0];
+						update_current_item(send_buff_for_other_user, r.current_item.name.c_str(), r.current_item.start_price, r.current_item.buy_now_price, r.current_item.description.c_str(), users, room_id);
+					}
+					else {
+						update_current_item(send_buff_for_other_user, "", 0, 0, "", users, room_id);
+						TerminateThread(rooms[room_id].timer_thread, 0);
+					}
 					return HEADER_LENGTH;
 				}
 			}
@@ -291,4 +297,3 @@ void leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &use
 		}
 	}
 }
-

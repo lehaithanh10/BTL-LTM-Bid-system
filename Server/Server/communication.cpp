@@ -24,8 +24,8 @@ int findPayloadLen(char in[]) {
 }
 
 void byte_stream_receiver(SOCKET s, char *payloadBuff, char* headerBuff, int flags) {
-	int payloadLen = *(int*)(headerBuff+1);
-	cout << "payloadLen" << payloadLen <<endl;
+	int payloadLen = *(int*)(headerBuff + 1);
+	cout << "payloadLen" << payloadLen << endl;
 	if (payloadLen > 0) {
 		int ret = Receive(s, payloadBuff, payloadLen, flags);
 	}
@@ -61,7 +61,7 @@ void send_time_notification(int room_id, char buff[], vector<Room> *rooms, int r
 		if ((*rooms)[i].room_id == room_id) {
 			vector<User> participants = (*rooms)[i].user_list;
 			for (int j = 0; j < participants.size(); j++) {
-				cout << "send notification here" << endl;
+				cout << "send sold item here" << endl;
 				Send(participants[j].socket, buff, response_length, 0);
 			}
 		}
