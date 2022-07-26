@@ -1,7 +1,8 @@
 #pragma once
-
+#define ACCOUNT_MAX_SIZE 10000
 // response code 
 #define SUCCESS_LOGIN 10
+#define FAIL_LOGIN 11
 #define SUCCESS_CREATE_ROOM 20
 #define SUCCESS_JOIN_ROOM 30
 #define SUCCESS_SELL_ITEM 40

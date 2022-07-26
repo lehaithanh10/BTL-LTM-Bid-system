@@ -28,22 +28,31 @@ Room* find_room_by_id(int id, vector<Room> rooms) {
 }
 
 
-int login(char payload_buff[], SOCKET s, vector<Room> rooms, vector<User> &users, char send_buff[]) {
+int login(char payload_buff[], SOCKET s, vector<Room> rooms, vector<User> &users, char send_buff[],string accounts[],int numact) {
 	struct User u;
-
 	string name(payload_buff);
-	u.name = name;
-	u.user_id = s;
-	u.socket = s;
-	users.push_back(u);
-	int payload_len = rooms.size();
-	send_buff[0] = SUCCESS_LOGIN;
-	memcpy(send_buff + 1, &payload_len, 4);
-	if (payload_len == 0) return 5;
-	for (unsigned int i = 0; i < rooms.size(); i++) {
-		send_buff[i + 5] = rooms[i].room_id;
+	for (int i = 0; i < numact; i++) {
+		cout << "'" << name << "' '" << accounts[i]<< "'" << endl;
+		if (name == accounts[i]) {
+			u.name = name;
+			u.user_id = s;
+			u.socket = s;
+			users.push_back(u);
+			int payload_len = rooms.size();
+			send_buff[0] = SUCCESS_LOGIN;
+			memcpy(send_buff + 1, &payload_len, 4);
+			if (payload_len == 0) return 5;
+			for (unsigned int i = 0; i < rooms.size(); i++) {
+				send_buff[i + 5] = rooms[i].room_id;
+			}
+			return payload_len + 5;
+		}
 	}
-	return payload_len + 5;
+	send_buff[0] = FAIL_LOGIN;
+	int length = 0;
+	memcpy(send_buff + 1, &length, 4);
+	return HEADER_LENGTH;
+	
 };
 
 
@@ -176,7 +185,9 @@ int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users,
 						memcpy(send_buff + 1, &length, 4);
 						return HEADER_LENGTH;
 					}
+
 					if (price < r.current_item.current_price + 10000) {
+
 						send_buff[0] = INVALID_PRICE_BID;
 						int length = 0;
 						memcpy(send_buff + 1, &length, 4);
