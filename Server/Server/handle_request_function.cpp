@@ -71,7 +71,7 @@ int create_room(SOCKET client, vector<User> &list_user, vector<Room> &list_room,
 	return 5;
 }
 
-int sell_item(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, vector<Room> &list_room,vector<User> users, int room_id, char send_buff_for_user[], char send_buff_for_other_user[]) {
+int sell_item(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, vector<Room> &list_room, vector<User> users, int room_id, char send_buff_for_user[], char send_buff_for_other_user[]) {
 	Item new_item;
 	new_item.name = item_name;
 	new_item.description = item_description;
@@ -80,15 +80,15 @@ int sell_item(string item_name, string item_description, int owner_id, int start
 	new_item.buy_now_price = buy_now_price;
 	int item_quantity;
 	for (int i = 0; i < list_room.size(); i++) {
-		if (list_room[i].room_id == room_id){
+		if (list_room[i].room_id == room_id) {
 			if (list_room[i].item_list.size() == 0) {
 				list_room[i].current_item = new_item;
-				update_current_item (send_buff_for_other_user, item_name.c_str(), start_price, buy_now_price, item_description.c_str(), users, room_id);
+				update_current_item(send_buff_for_other_user, item_name.c_str(), start_price, buy_now_price, item_description.c_str(), users, room_id);
 			}
 			list_room[i].item_list.push_back(new_item);
 			item_quantity = list_room[i].item_list.size();
 		}
-		
+
 	}
 
 	int code_for_user = SUCCESS_SELL_ITEM;
@@ -166,7 +166,7 @@ int join_room(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& 
 	return 5;
 }
 
-int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[],char send_buff_for_other_user[], char user_name[], int& current_price) {
+int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[], char send_buff_for_other_user[], char user_name[], int& current_price) {
 	int res;
 	int room_id = *(unsigned char*)(payload_buff);
 	int price = *(int*)(payload_buff + 1);
@@ -187,7 +187,7 @@ int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users,
 						return HEADER_LENGTH;
 					}
 					r.current_highest_bid_user_id = s;
-					
+
 					send_buff[0] = SUCCESS_BID_ITEM;
 					int length = 0;
 					memcpy(send_buff + 1, &length, 4);
@@ -203,21 +203,16 @@ int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users,
 						}
 					}
 					//send update current item to other user
-
-
-
 					return HEADER_LENGTH;
 				}
 			}
 		}
 	}
-	
 
 	return HEADER_LENGTH;
 }
 
 int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[], char send_buff_for_other_user[]) {
-	int res;
 	int room_id = *(unsigned char*)(payload_buff);
 	int price = *(int*)(payload_buff + 1);
 	for (auto &r : rooms) {//find room by id
@@ -231,7 +226,7 @@ int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& us
 						return HEADER_LENGTH;
 					}
 
-					if(price < r.current_item.buy_now_price) {
+					if (price < r.current_item.buy_now_price) {
 						send_buff[0] = INVALID_PRICE_BUY;
 						int length = 0;
 						memcpy(send_buff + 1, &length, 4);
@@ -248,25 +243,24 @@ int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& us
 					for (auto &other_user : users) {
 						if (other_user.joined_room_id == room_id && other_user.socket != s) {
 							Send(other_user.socket, send_buff_for_other_user, 105, 0);
-					}
-					//update item list and send update
-					if (r.item_list.size() > 0) {
-						r.current_item = r.item_list[0];
-						update_current_item(send_buff_for_other_user, r.current_item.name.c_str(), r.current_item.start_price, r.current_item.buy_now_price, r.current_item.description.c_str(), users, room_id);
-					}
-					else {
-						update_current_item(send_buff_for_other_user, "", 0, 0, "", users, room_id);
-						TerminateThread(rooms[room_id].timer_thread, 0);
-					}
+						}
+						//update item list and send update
+						if (r.item_list.size() > 0) {
+							r.current_item = r.item_list[0];
+							update_current_item(send_buff_for_other_user, r.current_item.name.c_str(), r.current_item.start_price, r.current_item.buy_now_price, r.current_item.description.c_str(), users, room_id);
+						}
+						else {
+							update_current_item(send_buff_for_other_user, "", 0, 0, "", users, room_id);
+							TerminateThread(rooms[room_id].timer_thread, 0);
+						}
 
-					return HEADER_LENGTH;
+						return HEADER_LENGTH;
+					}
 				}
 			}
 		}
+		return HEADER_LENGTH;
 	}
-
-
-	return HEADER_LENGTH;
 }
 
 void leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &users, char send_buff_for_user[], char send_buff_for_other_user[]) {
