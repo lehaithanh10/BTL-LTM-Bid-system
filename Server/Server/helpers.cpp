@@ -8,8 +8,6 @@
 using namespace std;
 
 void update_current_item(char send_buff_for_other_user[], const char item_name[], int start_price, int buy_now_price, const char description[], vector<User> users, int room_id) {
-	//hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void*)room_id, 0, 0); //start time thread
-	//rooms[room_id].timer_thread = hthread;
 
 	int length = 108 + strlen(description);
 	send_buff_for_other_user[0] = NOTI_UPDATE_CURRENT_ITEM;

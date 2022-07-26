@@ -334,6 +334,7 @@ unsigned __stdcall timer_thread(void *param) {
 	int count = 0;
 	int room_id = (int)param;
 	while (count <= 3) {
+
 		int test_time = 30000;
 		Sleep(test_time);
 		count++;
@@ -354,6 +355,7 @@ unsigned __stdcall timer_thread(void *param) {
 	int new_messsage_length = 0;
 	memcpy(send_buff_for_send_notification, &new_status_code, 1);
 	memcpy(send_buff_for_send_notification + 1, &new_messsage_length, 4);
+	memcpy(send_buff_for_send_notification + 5, &count, 1);
 	for (int i = 0; i < rooms.size(); i++) {
 		if (rooms[i].room_id == room_id) {
 			send_time_notification(room_id, send_buff_for_send_notification, &rooms, 5);
@@ -397,8 +399,9 @@ void join_room_handler(char payload_buff[], SOCKET s) {
 
 	//send update information to other client
 	send_buff_for_other_user[0] = NOTI_UPDATE_USER_QUANTITY;
-	int length = 4;
-	memcpy(send_buff_for_other_user + 1, &length, 4);
+	int message_length = 4;
+	memcpy(send_buff_for_other_user + 1, &message_length, 4);
+
 	memcpy(send_buff_for_other_user + 5, &current_user_count, 4);
 	for (auto &u : users) {
 		if (u.joined_room_id != -1 && u.joined_room_id == room_id && u.socket != s) {
@@ -411,6 +414,7 @@ void sell_item_handler(string item_name, string item_description, int owner_id, 
 
 	int send_bytes = sell_item(item_name, item_description, owner_id, start_price, buy_now_price, rooms, users, room_id, send_buff_for_user, send_buff_for_other_user);
 	hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void*)room_id, 0, 0); //start time thread
+
 	rooms[room_id].timer_thread = hthread;
 	int ret = Send(client, send_buff_for_user, 5, 0);
 	if (ret == SOCKET_ERROR) {
@@ -439,6 +443,11 @@ void bid_handler(char payload_buff[], SOCKET s) {
 	int room_id = (unsigned char)payload_buff[0];
 	int send_bytes = bid(payload_buff, s, rooms, users, send_buff_for_user, send_buff_for_other_user);
 	Send(s, send_buff_for_user, send_bytes, 0);
+	if (send_buff_for_user[0] == SUCCESS_BID_ITEM) {
+		TerminateThread(rooms[room_id].timer_thread, 0);
+		hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void*)room_id, 0, 0); //start thread
+		rooms[room_id].timer_thread = hthread;
+	}
 	if (send_buff_for_user[0] == SUCCESS_BID_ITEM) {
 		TerminateThread(rooms[room_id].timer_thread, 0);
 		hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void*)room_id, 0, 0); //start thread

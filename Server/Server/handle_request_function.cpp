@@ -186,8 +186,6 @@ int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users,
 						return HEADER_LENGTH;
 					}
 					r.current_highest_bid_user_id = s;
-
-
 					send_buff[0] = SUCCESS_BID_ITEM;
 					int length = 0;
 					memcpy(send_buff + 1, &length, 4);
@@ -248,10 +246,12 @@ int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& us
 					for (auto &other_user : users) {
 						if (other_user.joined_room_id == room_id && other_user.socket != s) {
 							Send(other_user.socket, send_buff_for_other_user, 105, 0);
+
 						}
 					}
 					//update item list and send update
 					r.item_list.erase(r.item_list.begin());
+
 					if (r.item_list.size() > 0) {
 						r.current_item = r.item_list[0];
 						update_current_item(send_buff_for_other_user, r.current_item.name.c_str(), r.current_item.start_price, r.current_item.buy_now_price, r.current_item.description.c_str(), users, room_id);

@@ -41,6 +41,7 @@ int join_room(char[], SOCKET, vector<Room>&, vector<User>&, char[], int&);
 */
 int bid(char[], SOCKET, vector<Room>&, vector<User>&, char[],char[]);
 
+
 /*
 * @function buy_immediately: end timer thread immediately and update new owner, or refuse if information is invalid
 * @param room_id(string): room id
