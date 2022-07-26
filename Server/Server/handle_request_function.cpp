@@ -164,9 +164,6 @@ int join_room(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& 
 					memcpy(send_buff + 321, &buyNowPrice, 4);//buyNowPrice
 					memcpy(send_buff + 325, room.current_item.description.c_str(), room.current_item.description.size());//Description
 					return payload_len + HEADER_LENGTH;
-
-
-
 				}
 			}
 		}
@@ -188,13 +185,16 @@ int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users,
 						memcpy(send_buff + 1, &length, 4);
 						return HEADER_LENGTH;
 					}
-					if (price < r.current_item.start_price && price < r.current_item.current_price + 10000) {
+
+					if (price < r.current_item.current_price + 10000) {
+
 						send_buff[0] = INVALID_PRICE_BID;
 						int length = 0;
 						memcpy(send_buff + 1, &length, 4);
 						return HEADER_LENGTH;
 					}
 					r.current_highest_bid_user_id = s;
+					r.current_item.current_price = price;
 					send_buff[0] = SUCCESS_BID_ITEM;
 					int length = 0;
 					memcpy(send_buff + 1, &length, 4);
@@ -209,22 +209,17 @@ int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users,
 							Send(u.socket, send_buff_for_other_user, 109, 0);
 						}
 					}
+					cout << r.current_item.current_price;
 					//send update current item to other user
-
-
-
 					return HEADER_LENGTH;
 				}
 			}
 		}
 	}
-
-
 	return HEADER_LENGTH;
 }
 
 int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[], char send_buff_for_other_user[]) {
-	int res;
 	int room_id = *(unsigned char*)(payload_buff);
 	int price = *(int*)(payload_buff + 1);
 	for (auto &r : rooms) {//find room by id
@@ -273,13 +268,11 @@ int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& us
 				}
 			}
 		}
+		return HEADER_LENGTH;
 	}
-
-
-	return HEADER_LENGTH;
 }
 
-void leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &users, char send_buff_for_user[], char send_buff_for_other_user[]) {
+int leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &users, char send_buff_for_user[], char send_buff_for_other_user[]) {
 	for (int i = 0; i < rooms.size(); i++) {
 		if (rooms[i].room_id == room_id) {
 			for (int j = 0; j < rooms[i].user_list.size(); j++) {
@@ -305,4 +298,9 @@ void leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &use
 			break;
 		}
 	}
+	for (unsigned int i = 0; i < rooms.size(); i++) {
+		send_buff_for_user[i + 5] = rooms[i].room_id;
+	}
+	cout << rooms.size() + 5 << endl;
+	return 	rooms.size() + 5;
 }

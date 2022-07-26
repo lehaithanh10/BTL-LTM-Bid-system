@@ -382,22 +382,7 @@ unsigned __stdcall timer_thread(void *param) {
 
 	return 0;
 }
-//void update_current_item(char send_buff_for_other_user[], const char item_name[], int start_price, int buy_now_price, const char description[], vector<User> users, int room_id) {
-//	hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void*)room_id, 0, 0); //start time thread
-//	rooms[room_id].timer_thread = hthread;
-//
-//	int length = 108 + strlen(description);
-//	send_buff_for_other_user[0] = NOTI_UPDATE_CURRENT_ITEM;
-//	memcpy(send_buff_for_other_user + 1, &length, 4);
-//	memcpy(send_buff_for_other_user + 5, item_name, 100);
-//	memcpy(send_buff_for_other_user + 105, &start_price, 4);
-//	memcpy(send_buff_for_other_user + 109, &buy_now_price, 4);
-//	for (auto& user : users) {
-//		if (user.joined_room_id == room_id) {
-//			Send(user.socket, send_buff_for_other_user, length + HEADER_LENGTH, 0);
-//		}
-//	}
-//}
+
 void join_room_handler(char payload_buff[], SOCKET s) {
 	int current_user_count;
 	int room_id = payload_buff[0];
@@ -473,8 +458,8 @@ void buy_now_handler(char payload_buff[], SOCKET s) {
 void leave_room_handler(char payload_buff[], SOCKET s) {
 	int room_id = (unsigned char)payload_buff[0];
 	int user_id = s;
-	leave_room(room_id, user_id, rooms, users, send_buff_for_user, send_buff_for_other_user);
-	Send(s, send_buff_for_user, 5, 0);
+	int send_bytes = leave_room(room_id, user_id, rooms, users, send_buff_for_user, send_buff_for_other_user);
+	Send(s, send_buff_for_user, send_bytes, 0);
 
 	Room current_room;
 	for (auto r : rooms) {
