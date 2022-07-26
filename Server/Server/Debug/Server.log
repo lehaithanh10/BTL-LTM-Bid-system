@@ -4,21 +4,9 @@ c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\s
 c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\handle_request_function.cpp(52): warning C4018: '<': signed/unsigned mismatch
 c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\handle_request_function.cpp(83): warning C4018: '<': signed/unsigned mismatch
 c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\handle_request_function.cpp(166): warning C4101: 'res': unreferenced local variable
-c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\handle_request_function.cpp(263): warning C4018: '<': signed/unsigned mismatch
 c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\handle_request_function.cpp(265): warning C4018: '<': signed/unsigned mismatch
-c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\handle_request_function.cpp(282): warning C4018: '<': signed/unsigned mismatch
-  Server.cpp
-c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\define_variable.h(34): warning C4005: 'SOMETHING_WRONG_WHEN_BUYNOW': macro redefinition
-  c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\define_variable.h(33): note: see previous definition of 'SOMETHING_WRONG_WHEN_BUYNOW'
-c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(326): warning C4018: '<': signed/unsigned mismatch
-c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(347): warning C4018: '<': signed/unsigned mismatch
-c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(359): warning C4018: '<': signed/unsigned mismatch
-c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(416): warning C4018: '<': signed/unsigned mismatch
-c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(427): warning C4101: 'tmp': unreferenced local variable
-c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(444): warning C4101: 'tmp': unreferenced local variable
-c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(445): warning C4101: 'current_price': unreferenced local variable
-c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\server.cpp(465): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\handle_request_function.cpp(260): warning C4715: 'buy_now': not all control paths return a value
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\handle_request_function.cpp(267): warning C4018: '<': signed/unsigned mismatch
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\handle_request_function.cpp(284): warning C4018: '<': signed/unsigned mismatch
+c:\users\my laptop\onedrive\desktop\bk\network_programming\finalnewver2\server\server\handle_request_function.cpp(262): warning C4715: 'buy_now': not all control paths return a value
   Server.vcxproj -> C:\Users\MY LAPTOP\OneDrive\Desktop\BK\Network_Programming\FinalNewVer2\Server\Debug\Server.exe
   Server.vcxproj -> C:\Users\MY LAPTOP\OneDrive\Desktop\BK\Network_Programming\FinalNewVer2\Server\Debug\Server.pdb (Full PDB)

@@ -183,6 +183,7 @@ int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users,
 						return HEADER_LENGTH;
 					}
 					r.current_highest_bid_user_id = s;
+					r.current_item.current_price = price;
 					send_buff[0] = SUCCESS_BID_ITEM;
 					int length = 0;
 					memcpy(send_buff + 1, &length, 4);
@@ -197,6 +198,7 @@ int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users,
 							Send(u.socket, send_buff_for_other_user, 109, 0);
 						}
 					}
+					cout << r.current_item.current_price;
 					//send update current item to other user
 					return HEADER_LENGTH;
 				}
