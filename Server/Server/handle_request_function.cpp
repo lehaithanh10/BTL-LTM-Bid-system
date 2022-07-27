@@ -283,7 +283,7 @@ int leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &user
 					cout << "Left user in room: " << user_quantity << endl;
 					send_buff_for_user[0] = SUCCESS_LEAVE_ROOM;
 					send_buff_for_other_user[0] = NOTI_UPDATE_USER_QUANTITY;
-					int length_for_user = 0;
+					int length_for_user = rooms.size();
 					int length_for_other = 4;
 					memcpy(send_buff_for_user + 1, &length_for_user, 4);
 					memcpy(send_buff_for_other_user + 1, &length_for_other, 4);
@@ -300,6 +300,7 @@ int leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &user
 	}
 	for (unsigned int i = 0; i < rooms.size(); i++) {
 		send_buff_for_user[i + 5] = rooms[i].room_id;
+		//send_buff_for_other_user[i + 9] = rooms[i].room_id;
 	}
 	cout << rooms.size() + 5 << endl;
 	return 	rooms.size() + 5;

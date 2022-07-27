@@ -342,7 +342,7 @@ unsigned __stdcall timer_thread(void *param) {
 	int room_id = (int)param;
 	while (count <= 3) {
 
-		int test_time = 30000;
+		int test_time = 15000;
 		Sleep(test_time);
 		count++;
 		int status_code = TIME_NOTIFICATION;
@@ -440,11 +440,7 @@ void bid_handler(char payload_buff[], SOCKET s) {
 		hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void*)room_id, 0, 0); //start thread
 		rooms[room_id].timer_thread = hthread;
 	}
-	if (send_buff_for_user[0] == SUCCESS_BID_ITEM) {
-		TerminateThread(rooms[room_id].timer_thread, 0);
-		hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void*)room_id, 0, 0); //start thread
-		rooms[room_id].timer_thread = hthread;
-	}
+
 };
 
 void buy_now_handler(char payload_buff[], SOCKET s) {
