@@ -28,11 +28,11 @@ Room* find_room_by_id(int id, vector<Room> rooms) {
 }
 
 
-int login(char payload_buff[], SOCKET s, vector<Room> rooms, vector<User> &users, char send_buff[],string accounts[],int numact) {
+int login(char payload_buff[], SOCKET s, vector<Room> rooms, vector<User> &users, char send_buff[], string accounts[], int numact) {
 	struct User u;
 	string name(payload_buff);
 	for (int i = 0; i < numact; i++) {
-		cout << "'" << name << "' '" << accounts[i]<< "'" << endl;
+		cout << "'" << name << "' '" << accounts[i] << "'" << endl;
 		if (name == accounts[i]) {
 			u.name = name;
 			u.user_id = s;
@@ -52,7 +52,7 @@ int login(char payload_buff[], SOCKET s, vector<Room> rooms, vector<User> &users
 	int length = 0;
 	memcpy(send_buff + 1, &length, 4);
 	return HEADER_LENGTH;
-	
+
 };
 
 
@@ -283,7 +283,9 @@ int leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &user
 					cout << "Left user in room: " << user_quantity << endl;
 					send_buff_for_user[0] = SUCCESS_LEAVE_ROOM;
 					send_buff_for_other_user[0] = NOTI_UPDATE_USER_QUANTITY;
-					int length_for_user = 0;
+					int length_for_user = rooms.size();
+					cout << "room size:" << rooms.size() << endl;
+
 					int length_for_other = 4;
 					memcpy(send_buff_for_user + 1, &length_for_user, 4);
 					memcpy(send_buff_for_other_user + 1, &length_for_other, 4);
@@ -301,6 +303,6 @@ int leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &user
 	for (unsigned int i = 0; i < rooms.size(); i++) {
 		send_buff_for_user[i + 5] = rooms[i].room_id;
 	}
-	cout << rooms.size() + 5 << endl;
+	cout << "room size:" << rooms.size() + 5 << endl;
 	return 	rooms.size() + 5;
 }
