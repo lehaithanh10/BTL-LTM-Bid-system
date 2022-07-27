@@ -42,12 +42,28 @@ int login(char payload_buff[], SOCKET s, vector<Room> rooms, vector<User> &users
 
 int create_room(SOCKET client, vector<User> &list_user, vector<Room> &list_room, char send_buff_for_user[], char send_buff_for_other_user[]) {
 	Room new_room;
+	bool user_found = false;
+	if (list_user.size() == 0) {
+		send_buff_for_user[0] = SOMETHING_WRONG_WHEN_CREATEROOM;
+		int length_payload = 0;
+		memcpy(send_buff_for_user + 1, &length_payload, 4);
+		return 5;
+	}
 	for (int i = 0; i < list_user.size(); i++) {
 		if (list_user[i].user_id == client) {
 			list_user[i].joined_room_id = list_room.size();
 			new_room.user_list.push_back(list_user[i]);
 			new_room.hoster_name = list_user[i].name;
+			user_found = true;
+			break;
 		}
+	}
+	//handle exception
+	if (!user_found) {
+		send_buff_for_user[0] = SOMETHING_WRONG_WHEN_CREATEROOM;
+		int length_payload = 0;
+		memcpy(send_buff_for_user + 1, &length_payload, 4);
+		return 5;
 	}
 	new_room.room_id = list_room.size();
 	list_room.push_back(new_room);
@@ -61,7 +77,7 @@ int create_room(SOCKET client, vector<User> &list_user, vector<Room> &list_room,
 	memcpy(send_buff_for_other_user, &code_for_other_user, 1);
 	memcpy(send_buff_for_other_user + 1, &length, 4);
 	memcpy(send_buff_for_other_user + 5, &new_room.room_id, 1);
-	return 5;
+	return 6;
 }
 
 int sell_item(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, vector<Room> &list_room, vector<User> users, int room_id, char send_buff_for_user[], char send_buff_for_other_user[]) {
@@ -73,6 +89,16 @@ int sell_item(string item_name, string item_description, int owner_id, int start
 	new_item.current_price = start_price;
 	new_item.buy_now_price = buy_now_price;
 	int item_quantity;
+	bool room_id_found = false;
+	cout << list_room.size() << endl;
+	cout << list_room.size() << endl;
+	if (list_room.size() == 0) {
+		send_buff_for_user[0] = SOMETHING_WRONG_WHEN_SELLITEM;
+		int length_payload = 0;
+		memcpy(send_buff_for_user + 1, &length_payload, 4);
+		return 5;
+	}
+	cout << 10 << endl;
 	for (int i = 0; i < list_room.size(); i++) {
 		if (list_room[i].room_id == room_id) {
 			if (list_room[i].item_list.size() == 0) {
@@ -81,10 +107,16 @@ int sell_item(string item_name, string item_description, int owner_id, int start
 			}
 			list_room[i].item_list.push_back(new_item);
 			item_quantity = list_room[i].item_list.size();
+			room_id_found = true;
 		}
 
 	}
-
+	if (!room_id_found) {
+		send_buff_for_user[0] = SOMETHING_WRONG_WHEN_SELLITEM;
+		int length_payload = 0;
+		memcpy(send_buff_for_user + 1, &length_payload, 4);
+		return 5;
+	}
 	int code_for_user = SUCCESS_SELL_ITEM;
 
 	int length_for_user = 0;
@@ -152,7 +184,12 @@ int join_room(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& 
 			}
 		}
 	}
+	//handle exception
+	send_buff[0] = SOMETHING_WRONG_WHEN_JOINROOM;
+	int length_payload = 0;
+	memcpy(send_buff + 1, &length_payload, 4);
 	return 5;
+
 }
 
 int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[], char send_buff_for_other_user[]) {
@@ -194,12 +231,15 @@ int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users,
 						}
 					}
 					cout << r.current_item.current_price;
-					//send update current item to other user
 					return HEADER_LENGTH;
 				}
 			}
 		}
 	}
+
+	send_buff[0] = SOMETHING_WRONG_WHEN_BIDITEM;
+	int length_payload = 0;
+	memcpy(send_buff + 1, &length_payload, 4);
 	return HEADER_LENGTH;
 }
 
@@ -252,15 +292,22 @@ int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& us
 				}
 			}
 		}
-		return HEADER_LENGTH;
+
 	}
+	send_buff[0] = SOMETHING_WRONG_WHEN_BUYNOW;
+	int length_payload = 0;
+	memcpy(send_buff + 1, &length_payload, 4);
+	return HEADER_LENGTH;
 }
 
 int leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &users, char send_buff_for_user[], char send_buff_for_other_user[]) {
+	bool room_id_found = false, user_id_found = false;
 	for (int i = 0; i < rooms.size(); i++) {
 		if (rooms[i].room_id == room_id) {
+			room_id_found = true;
 			for (int j = 0; j < rooms[i].user_list.size(); j++) {
 				if ((rooms[i].user_list)[j].user_id == user_id) {
+					user_id_found = true;
 					cout << "user_id: " << user_id << endl;
 					(rooms)[i].user_list.erase(((rooms)[i].user_list).begin() + j);
 					int user_quantity = (rooms)[i].user_list.size();
@@ -275,6 +322,12 @@ int leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &user
 				}
 			}
 		}
+	}
+	if (!room_id_found || !user_id_found) {
+		send_buff_for_user[0] = SOMETHING_WRONG_WHEN_LEAVEROOM;
+		int length_payload = 0;
+		memcpy(send_buff_for_user + 1, &length_payload, 4);
+		return 5;
 	}
 	for (int i = 0; i < (users).size(); i++) {
 		if ((users)[i].user_id == user_id) {

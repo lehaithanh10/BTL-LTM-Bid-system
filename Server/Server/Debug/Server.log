@@ -1,27 +1,9 @@
-﻿  Server.cpp
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\define_variable.h(35): warning C4005: 'SOMETHING_WRONG_WHEN_BUYNOW': macro redefinition
-  f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\define_variable.h(34): note: see previous definition of 'SOMETHING_WRONG_WHEN_BUYNOW'
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(136): warning C4101: 'server_addr': unreferenced local variable
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(333): warning C4018: '<': signed/unsigned mismatch
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(354): warning C4018: '<': signed/unsigned mismatch
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(366): warning C4018: '<': signed/unsigned mismatch
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(423): warning C4018: '<': signed/unsigned mismatch
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(434): warning C4101: 'tmp': unreferenced local variable
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(446): warning C4101: 'tmp': unreferenced local variable
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(447): warning C4101: 'current_price': unreferenced local variable
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\server.cpp(467): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-  Compiling...
-  handle_request_function.cpp
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\define_variable.h(35): warning C4005: 'SOMETHING_WRONG_WHEN_BUYNOW': macro redefinition
-  f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\define_variable.h(34): note: see previous definition of 'SOMETHING_WRONG_WHEN_BUYNOW'
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(45): warning C4018: '<': signed/unsigned mismatch
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(76): warning C4018: '<': signed/unsigned mismatch
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(159): warning C4101: 'res': unreferenced local variable
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(260): warning C4018: '<': signed/unsigned mismatch
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(262): warning C4018: '<': signed/unsigned mismatch
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(279): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(257): warning C4715: 'buy_now': not all control paths return a value
+﻿  handle_request_function.cpp
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(52): warning C4018: '<': signed/unsigned mismatch
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(102): warning C4018: '<': signed/unsigned mismatch
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(196): warning C4101: 'res': unreferenced local variable
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(305): warning C4018: '<': signed/unsigned mismatch
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(308): warning C4018: '<': signed/unsigned mismatch
+f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(332): warning C4018: '<': signed/unsigned mismatch
   Server.vcxproj -> F:\20212\Network programing\Code\BTL_LTM\BTL-LTM-Bid-system\Server\Debug\Server.exe
   Server.vcxproj -> F:\20212\Network programing\Code\BTL_LTM\BTL-LTM-Bid-system\Server\Debug\Server.pdb (Full PDB)
