@@ -324,8 +324,10 @@ void create_room_handler(SOCKET client) {
 	cout << "count room " << rooms.size() << endl;
 
 	// send response for user
-
-	int ret1 = Send(client, send_buff_for_user, 6, 0);
+	for (int i = 0; i < 5; i++) {
+		printf("%d ", send_buff_for_user[i]);
+	}
+	int ret1 = Send(client, send_buff_for_user, send_bytes, 0);
 	// send update for other user in system 
 	for (int i = 0; i < users.size(); i++) {
 		if (users[i].joined_room_id == -1 && users[i].user_id != client) {
@@ -402,9 +404,12 @@ void join_room_handler(char payload_buff[], SOCKET s) {
 void sell_item_handler(string item_name, string item_description, int owner_id, int start_price, int buy_now_price, SOCKET client, int room_id) {
 
 	int send_bytes = sell_item(item_name, item_description, owner_id, start_price, buy_now_price, rooms, users, room_id, send_buff_for_user, send_buff_for_other_user);
-	hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void*)room_id, 0, 0); //start time thread
+	if (send_bytes == 1) {
+		hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void*)room_id, 0, 0); //start time thread
 
-	rooms[room_id].timer_thread = hthread;
+		rooms[room_id].timer_thread = hthread;
+	}
+
 	int ret = Send(client, send_buff_for_user, 5, 0);
 	if (ret == SOCKET_ERROR) {
 		printf("Error %d", WSAGetLastError());
