@@ -43,38 +43,34 @@ vector<Room> rooms;
 void handle_request(unsigned char, char*, SOCKET client_socket);
 
 /*
-* @function log_in_handler: verify user email and password based on account.txt
-* @param email(string): user email
-* @param password(string): user password
-* @param client_socket(SOCKET): contain socket of request user
+* @function log_in_handler: verify username and send suitable message to client
+* @param payload_buff: payload that receive from client
+* @param s: socket that connect to client
 * @no return
 */
-void login_handler(char[], SOCKET);
+void login_handler(char payload_buff[], SOCKET s);
 
 
 /*
-* @function join_room_handler: add user to a room
-* @param room_id(string): room id
-* @param user_id(string): user id
-* @param client_socket(SOCKET): contain socket of request user
+* @function join_room_handler: add user to a room and send suitable message to client
+* @param payload_buff: payload that receive from client
+* @param s: socket that connect to client
 * @no return
 */
 void join_room_handler(char[], SOCKET);
 
 /*
-* @function bid_handler: update a new bid price, reset timer thread
-* @param room_id(string): room id
-* @param user_id(string): user id
-* @param client_socket(SOCKET): contain socket of request user
+* @function bid_handler: update a new bid price, reset timer thread and send suitable message to client
+* @param payload_buff: payload that receive from client
+* @param s: socket that connect to client
 * @no return
 */
 void bid_handler(char[], SOCKET);
 
 /*
-* @function buy_immediately_handler: set new owner of the item, and timer thread immediately
-* @param room_id(string): room id
-* @param user_id(string): user id
-* @param client_socket(SOCKET): contain socket of request user
+* @function buy_now_handler: remove item from queue, stop timer thread and send suitable message to client
+* @param payload_buff: payload that receive from client
+* @param s: socket that connect to client
 * @no return
 */
 void buy_now_handler(char[], SOCKET);
@@ -120,6 +116,10 @@ unsigned __stdcall timer_thread(void *param);
 * @thread worker_thread: handle connection, new children worker_thread will be created when the number of parent thread exccess maximum number of 64 clients
 */
 unsigned __stdcall worker_thread(void *param);
+/* @function read_file: read accounts data from file
+* @param path: file path that contain data
+* @return no return
+*/
 void read_file(char* path);
 int main(int argc, char* argv[])
 {
@@ -440,7 +440,6 @@ void bid_handler(char payload_buff[], SOCKET s) {
 		hthread = (HANDLE)_beginthreadex(0, 0, timer_thread, (void*)room_id, 0, 0); //start thread
 		rooms[room_id].timer_thread = hthread;
 	}
-
 };
 
 void buy_now_handler(char payload_buff[], SOCKET s) {
