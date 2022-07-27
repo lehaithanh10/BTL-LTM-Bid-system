@@ -10,22 +10,6 @@
 #pragma comment (lib, "Ws2_32.lib")
 
 using namespace std;
-User* find_user_by_id(int id, vector<User> users) {
-	for (struct User &u : users) {
-		if (u.user_id = id) {
-			return &u;
-		}
-	}
-	return NULL;
-}
-
-Room* find_room_by_id(int id, vector<Room> rooms) {
-	for (auto &u : rooms) {
-		if (u.room_id == id)
-			return &u;
-	}
-	return NULL;
-}
 
 
 int login(char payload_buff[], SOCKET s, vector<Room> rooms, vector<User> &users, char send_buff[], string accounts[], int numact) {
@@ -284,8 +268,6 @@ int leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &user
 					send_buff_for_user[0] = SUCCESS_LEAVE_ROOM;
 					send_buff_for_other_user[0] = NOTI_UPDATE_USER_QUANTITY;
 					int length_for_user = rooms.size();
-					cout << "room size:" << rooms.size() << endl;
-
 					int length_for_other = 4;
 					memcpy(send_buff_for_user + 1, &length_for_user, 4);
 					memcpy(send_buff_for_other_user + 1, &length_for_other, 4);
@@ -302,6 +284,7 @@ int leave_room(int room_id, int user_id, vector<Room> &rooms, vector<User> &user
 	}
 	for (unsigned int i = 0; i < rooms.size(); i++) {
 		send_buff_for_user[i + 5] = rooms[i].room_id;
+		//send_buff_for_other_user[i + 9] = rooms[i].room_id;
 	}
 	cout << "room size:" << rooms.size() + 5 << endl;
 	return 	rooms.size() + 5;

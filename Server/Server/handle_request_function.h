@@ -6,50 +6,54 @@
 using namespace std;
 
 /*
-* @function login: verify email and password
-* @param email(string): room id
-* @param password(string): user id
-* @param client_socket(SOCKET): contain socket of request user
-
-* @return response code (defined in status_code.h)
+* @function login: verify username and return list room for client
+* @param payload_buff: payload receive from client
+* @param s: Socket that connect with client
+* @param rooms: list of room in server
+* @param users: list of user have login to server
+* @param send_buff: buffer that use to send message back to client
+* @param accounts: list of account on database
+* @param numact: number of account on database
+* @return length of the message send back to client
 */
-int login(char[], SOCKET, vector<Room>, vector<User>&, char[],string [],int);
+int login(char payload_buff[], SOCKET s, vector<Room> rooms, vector<User> &users, char send_buff[], string accounts[], int numact);
 
-/*
-* @function show_room: display all created room
-* @param room(vector<Room>*): created room list
-* @return response code (defined in status_code.h)
-*/
-string view_room();
 
 /*
 * @function join_room: add user to room
-* @param room_id(string): room id
-* @param user_id(string): user id
-* @param room(vector<Room>*): created room list
-* @param user(vector<User>*): connected user list
-* @return response code (defined in status_code.h)
+* @param payload_buff: payload receive from client
+* @param s: Socket that connect with client
+* @param rooms: list of room in server
+* @param users: list of user have login to server
+* @param send_buff: buffer that use to send message back to client
+* @param current_user_count: number of user in room
+* @return length of the message send back to client
 */
-int join_room(char[], SOCKET, vector<Room>&, vector<User>&, char[], int&);
+int join_room(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[], int& current_user_count);
 
 /*
-* @function bid: reset timer thread and update new price, or refuse if information is invalid
-* @param room_id(string): room id
-* @param user_id(string): user id
-* @param room(vector<Room>*): created room list
-* @return response code (defined in status_code.h)
+* @function bid: verified the bid information and send back to client updated price for other user if bid success
+* @param payload_buff: payload receive from client
+* @param s: Socket that connect with client
+* @param rooms: list of room in server
+* @param users: list of user have login to server
+* @param send_buff: buffer that use to send message back to client
+* @param send_buff_for_other_user: buffer that send to other client(not client with socket s) in the same room with client with socket s if bid success
+* @return length of the message send back to client
 */
-
 int bid(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[], char send_buff_for_other_user[]);
 
 /*
-* @function buy_immediately: end timer thread immediately and update new owner, or refuse if information is invalid
-* @param room_id(string): room id
-* @param user_id(string): user id
-* @param room(vector<Room>*): created room list
-* @return response code (defined in status_code.h)
+* @function buy_now: verified the buy_now information and send back to client updated price for other user if buy_now success
+* @param payload_buff: payload receive from client
+* @param s: Socket that connect with client
+* @param rooms: list of room in server
+* @param users: list of user have login to server
+* @param send_buff: buffer that use to send message back to client
+* @param send_buff_for_other_user: buffer that send to other client(not client with socket s) in the same room with client with socket s if buy_now success
+* @return length of the message send back to client
 */
-int buy_now(char[], SOCKET, vector<Room>&, vector<User>&, char[], char[]);
+int buy_now(char payload_buff[], SOCKET s, vector<Room> &rooms, vector<User>& users, char send_buff[], char send_buff_for_other_user[]);
 
 
 /*
