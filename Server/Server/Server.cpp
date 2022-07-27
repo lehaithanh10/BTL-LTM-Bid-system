@@ -45,53 +45,50 @@ void handle_request(unsigned char, char*, SOCKET client_socket);
 /*
 * @function log_in_handler: verify username and send suitable message to client
 * @param payload_buff: payload that receive from client
-* @param s: socket that connect to client
+* @param client: socket that connect to client
 * @no return
 */
-void login_handler(char payload_buff[], SOCKET s);
+void login_handler(char payload_buff[], SOCKET client);
 
 
 /*
 * @function join_room_handler: add user to a room and send suitable message to client
 * @param payload_buff: payload that receive from client
-* @param s: socket that connect to client
+* @param client: socket that connect to client
 * @no return
 */
-void join_room_handler(char[], SOCKET);
+void join_room_handler(char payload_buff[], SOCKET client);
 
 /*
 * @function bid_handler: update a new bid price, reset timer thread and send suitable message to client
 * @param payload_buff: payload that receive from client
-* @param s: socket that connect to client
+* @param client: socket that connect to client
 * @no return
 */
-void bid_handler(char[], SOCKET);
+void bid_handler(char payload_buff[], SOCKET client);
 
 /*
 * @function buy_now_handler: remove item from queue, stop timer thread and send suitable message to client
 * @param payload_buff: payload that receive from client
-* @param s: socket that connect to client
+* @param client: socket that connect to client
 * @no return
 */
-void buy_now_handler(char[], SOCKET);
+void buy_now_handler(char payload_buff[], SOCKET client);
 
 /*
-* @function create_room_handler: create and run new timer thread, create new room in rooms list
-* @param user_id(string): user id
-* @param item_name(string): name of the item
-* @param item_description(string): description of the item
-* @param starting_price(int): starting price of the item
-* @param buy_immediately_price(int): price that user can buy immediately
-* @param client_socket(SOCKET): contain socket of request user
+* @function create_room_handler: create new room for user to join in room list 
+* @param payload_buff: payload that receive from client
+* @param client: socket that connect to client
 * @no return
 */
 void create_room_handler(SOCKET client);
 
 /*
-* @function create_room_handler: create and run new timer thread, create new room in rooms list
+* @function sell_item_handler: create and run new timer thread, add item to list item room for user to bid and buy
 * @param user_id(string): user id
 * @param item_name(string): name of the item
 * @param item_description(string): description of the item
+* @param owner_id(string): onwer id of item
 * @param starting_price(int): starting price of the item
 * @param buy_immediately_price(int): price that user can buy immediately
 * @param client_socket(SOCKET): contain socket of request user
@@ -102,13 +99,13 @@ void sell_item_handler(string item_name, string item_description, int owner_id, 
 /*
 * @function leave_room_handler: remove user from participant list of that room
 * @param payload_buff(char[]): payload of request
-* @param s(SOCKET): contain socket of request user
+* @param client(SOCKET): contain socket of request user
 * @no return
 */
-void leave_room_handler(char[], SOCKET);
+void leave_room_handler(char payload_buff[], SOCKET client);
 
 /*
-* @thread timer_thread: time count and notify the owner when the time is over
+* @thread timer_thread: time count and notify when the time is over
 */
 unsigned __stdcall timer_thread(void *param);
 

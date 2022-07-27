@@ -1,9 +1,2 @@
-﻿  handle_request_function.cpp
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(52): warning C4018: '<': signed/unsigned mismatch
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(102): warning C4018: '<': signed/unsigned mismatch
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(196): warning C4101: 'res': unreferenced local variable
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(305): warning C4018: '<': signed/unsigned mismatch
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(308): warning C4018: '<': signed/unsigned mismatch
-f:\20212\network programing\code\btl_ltm\btl-ltm-bid-system\server\server\handle_request_function.cpp(332): warning C4018: '<': signed/unsigned mismatch
-  Server.vcxproj -> F:\20212\Network programing\Code\BTL_LTM\BTL-LTM-Bid-system\Server\Debug\Server.exe
-  Server.vcxproj -> F:\20212\Network programing\Code\BTL_LTM\BTL-LTM-Bid-system\Server\Debug\Server.pdb (Full PDB)
+﻿  Server.vcxproj -> C:\Users\MY LAPTOP\OneDrive\Desktop\BK\Network_Programming\FinalNewVer2\Server\Debug\Server.exe
+  Server.vcxproj -> C:\Users\MY LAPTOP\OneDrive\Desktop\BK\Network_Programming\FinalNewVer2\Server\Debug\Server.pdb (Full PDB)
